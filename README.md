@@ -1,7 +1,6 @@
 ## Preface
 
-While asking for resources for a deep dive into Epic Game's Unreal Engine architecture beyond the little information
-provided in the official documentation, to my dismay someone responded there aren't many resources like that around. So
+Wanting a fast way to learn the insides of Unreal Engine, I inquired the UE dev community regarding resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation. To my dismay, someone responded there aren't many resources like that around. So
 begins my journey to understand the engine, write notes on my findings, and share it.
 
 Although there may not be many resources on unraveling the engine code, there are a plethora of resources that help in
