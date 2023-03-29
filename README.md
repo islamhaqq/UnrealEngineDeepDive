@@ -16,7 +16,14 @@ Engine has it defined in `Windows/LaunchWindows.cpp`.
 The [Quake 2 engine](https://github.com/id-Software/Quake-2/blob/master/win32/sys_win.c#L594), for example, also has the
 identically named function. It returns a 0 on success or error levels otherwise.
 
-![image](https://user-images.githubusercontent.com/11065634/228419404-c8debb73-0864-4f5e-a8c9-96507bd03d24.png)
+```cpp
+int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ char* pCmdLine, _In_ int32 nCmdShow)
+{
+	int32 Result = LaunchWindowsStartup(hInInstance, hPrevInstance, pCmdLine, nCmdShow, nullptr);
+	LaunchWindowsShutdown();
+	return Result; // 0 on success, error level otherwise
+}
+```
 
 Each supported OS has their respective entry point: MacOS' version for example is `INT32_MAIN_INT32_ARGC_TCHAR_ARGV`
 in `Mac/LaunchMac.cpp` and for Linux it's `int main`.
