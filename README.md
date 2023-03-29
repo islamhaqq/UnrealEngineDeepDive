@@ -11,24 +11,36 @@ is a great resource on understanding Unreal Engine, and game engines in general.
 
 ## Entry Point
 
-The entry point to the engine, like most other game engines, is the `WinMain` function, particularly for Windows. Unreal
-Engine has it defined in `Windows/LaunchWindows.cpp`.
+The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`. 
+Unreal Engine's entry point for Windows, like all other game engines, is the `WinMain` function defined in `Windows/LaunchWindows.cpp`.
 The [Quake 2 engine](https://github.com/id-Software/Quake-2/blob/master/win32/sys_win.c#L594), for example, also has the
-identically named function. It returns a 0 on success or error levels otherwise.
+identically named function.
+
+Each supported platform has their respective entry point:
+* MacOS: `INT32_MAIN_INT32_ARGC_TCHAR_ARGV` in `Mac/LaunchMac.cpp`
+* Linux: `int main` in `Linux/LaunchLinux.cpp`
+* IOS: `int main` in `IOS/LaunchIOS.cpp`
 
 ```cpp
+// Windows specific parameters: HINSTANCE is identification to prevent class name clashing
 int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ char* pCmdLine, _In_ int32 nCmdShow)
 {
 	int32 Result = LaunchWindowsStartup(hInInstance, hPrevInstance, pCmdLine, nCmdShow, nullptr);
-	LaunchWindowsShutdown();
+	LaunchWindowsShutdown(); 
 	return Result; // 0 on success, error level otherwise
 }
 ```
 
-Each supported OS has their respective entry point: MacOS' version for example is `INT32_MAIN_INT32_ARGC_TCHAR_ARGV`
-in `Mac/LaunchMac.cpp` and for Linux it's `int main`.
-
 ## Main Engine Loop
+
+It is a very simple while loop.
+
+```cpp
+while( !IsEngineExitRequested() )
+{
+    EngineTick();
+}
+```
 
 ## Runtime Components
 
