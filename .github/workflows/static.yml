@@ -36,7 +36,8 @@ jobs:
       - name: Convert Markdown to HTML
         uses: jd-solanki/gh-action-md-to-html@v1.1.0
         with:
-          files: '["README.md","index.html"]'
+          files: '[["README.md","index.html"]]'
+          debug: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
