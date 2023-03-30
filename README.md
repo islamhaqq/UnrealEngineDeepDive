@@ -78,42 +78,25 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 ```c++
 // Core/Private/Apple/ApplePlatformMemory.cpp
 
-// In this file, we keep track of the amount of memory we've allocated.
+// In this file, we keep track of the amount of memory we've allocated for an Unreal app running on an Apple device.
 
-#include <stdlib.h> // c standard library
-#include <objc/runtime.h> // for inspecting and manipulating Objective-C runtime data structures
-#if PLATFORM_IOS && defined(__IPHONE_13_0) // Include only for iOS 13+
-#include <os/proc.h> // in order to call os_proc_available_memory  which determines the amount of memory available to the current app (your game running on the iPhone)
-#endif // Only need to include one header specific to iOS 13+.
-#include <CoreFoundation/CFBase.h>
-#include "HAL/LowLevelMemTracker.h"
+#include <stdlib.h>                          // c standard library
+#include <objc/runtime.h>                    // for inspecting and manipulating Objective-C runtime data structures
+#if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iOS 13+
+#include <os/proc.h>                         // in order to call os_proc_available_memory  which determines the amount of memory available to the current app (your game running on the iPhone)
+#endif                                       // Only need to include one header specific to iOS 13+.
+#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems. for CFIndex
+#include "HAL/LowLevelMemTracker.h"          // for FPlatformMemoryStats and FLowLevelMemTracker in order to track memory allocations
 #include "Apple/AppleLLM.h"
-```
 
-```c++
-/**
- * Apple implementation of the Atomics OS functions
- **/
-struct CORE_API FApplePlatformAtomics : public FClangPlatformAtomics
+// Skip
+
+FMalloc* FApplePlatformMemory::BaseAllocator()
 {
-#if	PLATFORM_HAS_128BIT_ATOMICS
-	static FORCEINLINE bool InterlockedCompareExchange128( volatile FInt128* Dest, const FInt128& Exchange, FInt128* Comparand )
-	{
-		__uint128_t* Expected = ((__uint128_t*)Comparand);
-		__uint128_t Desired = ((__uint128_t const&)Exchange);
-		return __atomic_compare_exchange_16((volatile __uint128_t*)Dest, Expected, Desired, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
-	}
-	
-	/**
-	 * @return true, if the processor we are running on can execute compare and exchange 128-bit operation.
-	 * @see cmpxchg16b, early AMD64 processors don't support this operation.
-	 */
-	static FORCEINLINE bool CanUseCompareExchange128()
-	{
-		return true;
-	}
+#if ENABLE_LOW_LEVEL_MEM_TRACKER
+	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats();
+	FLowLevelMemTracker::Get().SetProgramSize(MemStats.UsedPhysical);
 #endif
-};
 ```
 
 ### Xbox
