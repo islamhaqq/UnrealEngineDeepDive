@@ -91,6 +91,22 @@ Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to re
 
 Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 
+## Core Systems
+
+### Data Structures & Algorithms
+
+All software systems require containers that allow for the storage and manipulation of data and algorithms that use these data structures to solve problems. Many projects use standard and
+third-party libraries that provide implementations of these data structure and algorithms. However, Unreal Engine opts for a custom solution due to performance benefits. It neither uses STL,
+the C++ Standard Template Library, nor third-parties like Boost, Folly, or Loki. Although it isn't used anywhere in the Engine, many of the custom implementations are inspired by Boost, a popular and powerful data
+structures and algorithms C++ library that shares similar style to its predecessor STL. However, for an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`). Many of the
+third party libraries included by UE, however, do use Boost.
+
+### Automation
+
+#### Unit Testing
+
+#### Gauntlet
+
 ## UObject
 
 All objects in the engine are derived from this class.
@@ -100,12 +116,12 @@ All objects in the engine are derived from this class.
 The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
 `UObject` with a transform.
 
-## Components
+## Composition OOP Design Pattern - Components
 
 Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
 of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
-reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing into
-a mess of tightly coupled code that takes longer to compile and harder to maintain.
+reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing files into
+a mess of tightly coupled code that takes longer to compile and harder to maintain due to everything depending on each other.
 
 The base class for components is the `UActorComponent`.
 
@@ -186,4 +202,8 @@ obvious heavy user of abilities at scale.
 
 ### Gameplay Tags
 
-Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities.
+Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
+An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
+
+### Gameplay Effects
+
