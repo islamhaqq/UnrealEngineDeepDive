@@ -12,17 +12,17 @@ Unreal Engine can be broken into two important components: the Editor and the Ru
 
 Note: Unreal Engine (taken from Quake Engine architecture) is different from most other engines in that the tool suite (UnrealEd) is built into the runtime engine. 
 
-## Runtime Engine Architecture
+# Runtime Engine Architecture
 
-Unreal Engine, like all software systems and game engines, is built in layers. In order to
-maintain platform independence, modularity, and avoid circular dependencies, the lower layers do not depend on
-upper layers.
+Unreal Engine, like all software systems and game engines, is built in layers. In order to maintain testability, platform independence, re-usability/modularity,
+and avoid circular dependencies, the lower layers do not depend on upper layers.
 
 The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
 `GameModeBase`. The lower layers contain hardware-specific implementation such as `Runtime/Unix`.
 
 From top to bottom, the layers are:
-* GameFramework, Rendering, Collision & Physics, Animation, AI, HID Audio, Input
+* Game-Specific Subsystems
+* Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal Animation Collision & Physics, Animation, AI, HID Audio, Input
 * Resources (Resource Manager)
 * Core Systems
 * Platform Independence Layer (Networking, File System)
@@ -33,9 +33,14 @@ From top to bottom, the layers are:
 
 To keep the project modular, many features such as the Gameplay Ability System are separated out into optional Plugins, while core components are under `Source`.
 
-## Hardware Layer
+## Target Hardware Layer
 
-This layer is platform-specific, such as optimizations made for different computer or console systems.
+This layer is platform-specific, such as optimizations made for different computer or console systems. The Quake 2 engine, for example, had significant optimizations
+made for the Intel's Pentium processors.
+
+Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations. For example, the `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
+`Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
+
 
 ### Entry Point
 
@@ -614,7 +619,9 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
 #### Pathfinding (A*)
 
-## Game Layer (This is not part of the engine, but rather built on top of it. Including because it can be helpful and a good wrap up of the engine in practical usage)
+## Game Layer (Game Code)
+
+**Note:** This is not part of the engine, but rather built on top of it. Including because it can be helpful and a good wrap up of the engine in practical usage
 
 ### RTS & TBS
 
