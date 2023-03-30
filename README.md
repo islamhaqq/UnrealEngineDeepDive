@@ -142,14 +142,17 @@ HTML Table Version:
     </tr>
     <tr>
       <td>TArrayView</td>
-      <td>A statically sized view of an array of typed elements (it does not have add or remove). Designed for functions to take in as an argument where the function does not need to mutate the array.
+      <td>
+        A statically sized view of an array of typed elements (it does not have add or remove). Designed for functions to take in as an argument where the function does not need to mutate the array.
+        
         ```cpp
         int32 SumAll(TArrayView<const int32> array)
         { 
             return Algo::Accumulate(array);
         }
         ```
-        </td>
+
+      </td>
       <td>-</td>
       <td>boost::container::vector</td>
     </tr>
