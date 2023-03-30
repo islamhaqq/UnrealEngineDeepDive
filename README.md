@@ -176,3 +176,14 @@ The base class for components is the `UActorComponent`.
 | `UVolumetricCloudComponent`
 | `UWindDirectionalSourceComponent`
 | `UWorldPartitionStreamingSourceComponent`
+
+
+## Gameplay Ability System
+
+The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
+have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
+obvious heavy user of abilities at scale.
+
+### Gameplay Tags
+
+Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities.
