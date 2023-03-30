@@ -88,6 +88,8 @@ while( !IsEngineExitRequested() )
 
 ## Drivers Layer
 
+## Operating System Layer
+
 ## 3rd Party SDKs Layer
 
 ### Graphics
@@ -262,8 +264,6 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 
 ### Asynchronous File I/O
 
-## Visual Effects Layer
-
 ## Resources (Game Assets) Layer
 
 ### UnrealEd
@@ -273,7 +273,7 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
 `uasset` files.
 
-## Collision & Physics
+## Collision & Physics Layer
 
 This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from). Calling it physics is a bit of a
 misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
@@ -287,7 +287,7 @@ Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 
 #### Gameplay Effects
 
-## Tool Suite - Unreal Editor
+## World Builder Layer (Tool Suite) - Unreal Editor
 
 ### Skeletons and Animation
 
@@ -300,6 +300,24 @@ Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 #### Animation Blueprint Editor
 
 #### Physics editor
+
+## Human Interface Devices (HID) Layer
+
+## Profiling & Debugging Layer
+
+## Low-Level Renderer Layer
+
+## Scene Graph / Culling Optimizations Layer
+
+## Skeletal Animation layer
+
+## Audio Layer
+
+## Online Multiplayer Layer
+
+## Front End Layer
+
+## Visual Effects Layer
 
 ## Gameplay Foundations Layer
 
@@ -406,3 +424,53 @@ All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blu
 The `UEdGraph` is a simple graph data structure that listeners on every node.
 
 The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
+
+## Game-Specific Subsystems Layer
+
+### Game Specific Rendering
+
+#### Terrain Rendering
+
+#### Water Simulation & Rendering
+
+### Player Mechanics
+
+#### State Machine & Animation
+
+#### Camera-Relative Controls (HID)
+
+#### Collision Manifold
+
+#### Movement
+
+### Game Cameras
+
+#### Fixed Cameras
+
+#### Scripted/Animated Cameras
+
+#### Player-Follow Camera
+
+#### Debug Fly-Through Cam
+
+### AI
+
+#### Goals & Decision-Making
+
+#### Actions (Engine Interface)
+
+#### Sight Traces & Perception
+
+#### Pathfinding (A*)
+
+## Game Layer (This is not part of the engine, but rather built on top of it. Including because it can be helpful and a good wrap up of the engine in practical usage)
+
+### RTS & TBS
+
+#### Fog of War
+
+### FPS, TPS, & RPG
+
+### Weapons
+
+### Abilities
