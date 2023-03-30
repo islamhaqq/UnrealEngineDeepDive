@@ -10,7 +10,9 @@ Otherwise, start from the top, as understanding the lower layers will help you u
 
 Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
-Note: Unreal Engine (taken from Quake Engine architecture) is different from most other engines in that the tool suite (UnrealEd) is built into the runtime engine. 
+Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its competitor Quake Engine) and Quake Engine has the tool suite (UnrealEd) built into the runtime engine instead of as a separate executable.
+There are a lot of benefits for this, most importantly that PIE is possible in-editor without performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors such as reducing code duplication between the two.
+There are also drawbacks in developer productivity due to locking of files preventing simultaneous editing of assets. More on this later.
 
 # Runtime Engine Architecture
 
@@ -83,7 +85,7 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 #include <stdlib.h>                          // c standard library
 #include <objc/runtime.h>                    // for inspecting and manipulating Objective-C runtime data structures
 #if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iOS 13+
-#include <os/proc.h>                         // in order to call os_proc_available_memory  which determines the amount of memory available to the current app (your game running on the iPhone)
+#include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
 #endif                                       // Only need to include one header specific to iOS 13+.
 #include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems. for CFIndex
 #include "HAL/LowLevelMemTracker.h"          // for FPlatformMemoryStats and FLowLevelMemTracker in order to track memory allocations
