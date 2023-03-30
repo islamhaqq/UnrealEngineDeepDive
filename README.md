@@ -86,3 +86,71 @@ of is-a relationships. You will find that containing gameplay functionality with
 a mess of tightly coupled code that takes longer to compile and harder to maintain.
 
 The base class for components is the `UActorComponent`.
+
+### Table of Components
+
+| Component                                  | Description                                                                                                                                                                                                                         |
+|--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `UActorComponent`                          | Every component inherits from this class.                                                                                                                                                                                           |
+| `UApplicationLifecycleComponent`           | For handling notifications received from the OS about the application state (low power mode, temperature changed, received startup, activated, suspended, termination, etc). Most of these notifications are sent via CoreDelegates |
+| `UArrowComponent`                          | A PrimitiveComponent (which means it renders unlike ActorComponent) that renders a simple arrow using lines. Can be used to indicate which way an object is facing.                                                                 |
+| `UAudioComponent`                          | 
+| `UBillboardComponent`                       
+| `UBoundsCopyComponent`                      
+| `UBoxComponent`                             
+| `UBoxReflectionCaptureComponent`            
+| `UBrushComponent`                           
+| `UCapsuleComponent`                         
+| `UChildActorComponent`                      
+| `UDecalComponent`                           
+| `UDirectionalLightComponent`                
+| `UDrawFrustumComponent`                     
+| `UDrawSphereComponent`                      
+| `UExponentialHeightFogComponent`            
+| `UForceFeedbackComponent`                   
+| `UHierarchicalInstancedStaticMeshComponent` 
+| `UInputComponent`
+| `UInstancedStaticMeshComponent`
+| `UInterpToMovementComponent`
+| `ULightComponent`
+| `ULightComponentBase`
+| `ULightmassPortalComponent`
+| `ULineBatchComponent`
+| `ULocalLightComponent`
+| `ULODSyncComponent`
+| `UMaterialBillboardComponent`
+| `UMeshComponent`
+| `UModelComponent`
+| `UPawnNoiseEmitterComponent`
+| `UPlanarReflectionComponent`
+| `UPlaneReflectionCaptureComponent`
+| `UPlatformEventsComponent`
+| `UPointLightComponent`
+| `UPoseableMeshComponent`
+| `UPostProcessComponent`
+| `UPrimitiveComponent`                      | An ActorComponent that can be rendered.                                                                                                                                                                                             |
+| `URectLightComponent`
+| `UReflectionCaptureComponent`
+| `URuntimeVirtualTextureComponent`
+| `USceneCaptureComponent`
+| `USceneCaptureComponent2D`
+| `USceneCaptureComponentCube`
+| `USceneComponent`                           | An ActorComponent that has a transform.                                                                                                                                                                                             |
+| `UShapeComponent`
+| `USkeletalMeshComponent`
+| `USkinnedMeshComponent`
+| `USkyAtmosphereComponent`
+| `USkyLightComponent`
+| `USphereComponent`
+| `USphereReflectionCaptureComponent`
+| `USplineComponent`
+| `USplineMeshComponent`
+| `USpotLightComponent`
+| `UStaticMeshComponent`
+| `UStereoLayerComponent`
+| `UTextRenderComponent`
+| `UTimelineComponent`
+| `UVectorFieldComponent`
+| `UVolumetricCloudComponent`
+| `UWindDirectionalSourceComponent`
+| `UWorldPartitionStreamingSourceComponent`
