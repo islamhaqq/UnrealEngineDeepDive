@@ -1,16 +1,19 @@
 ## Preface
 
-Wanting a fast way to learn the insides of Unreal Engine, I inquired the UE dev community regarding resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation. To my dismay, someone responded there aren't many resources like that around. So
-begins my journey to understand the engine, write notes on my findings, and share it.
+There are not many resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation.
+This should help fill in the gaps for those who are interested in learning more about the engine.
 
-Although there may not be many resources on unraveling the engine code, there are a plethora of resources that help in
-understanding the engine. [Game Engine Architecture by Jason Gregory](https://www.goodreads.com/book/show/6709076-game-engine-architecture)
-is a great resource on understanding Unreal Engine, and game engines in general.
+Although there may not be many resources on unraveling the engine code, there are however a plethora of resources that help in
+understanding game engines in general. [Game Engine Architecture by Jason Gregory](https://www.goodreads.com/book/show/6709076-game-engine-architecture)
+is a great resource that will help you understand Unreal Engine.
+
+**Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the bottom of the document.
+Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
 ## Runtime Engine Architecture
 
 Unreal Engine, like all software systems and game engines, is built in layers. In order to
-maintain modularity and avoid circular dependencies, the lower layers do not depend on
+maintain platform independence, modularity, and avoid circular dependencies, the lower layers do not depend on
 upper layers.
 
 The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
@@ -26,11 +29,13 @@ From top to bottom, the layers are:
 * Drivers
 * Hardware
 
-To keep the project modular, many Engine features are separated out into optional Plugins, while core components are under `Source`.
+To keep the project modular, many features such as the Gameplay Ability System are separated out into optional Plugins, while core components are under `Source`.
 
-## Entry Point
+## Hardware Layer
 
-The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`. 
+### Entry Point
+
+The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`.
 Unreal Engine's entry point for Windows, like all other game engines, is the `WinMain` function defined in `Windows/LaunchWindows.cpp`.
 The [Quake 2 engine](https://github.com/id-Software/Quake-2/blob/master/win32/sys_win.c#L594), for example, also has the
 identically named function.
@@ -50,7 +55,7 @@ int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstanc
 }
 ```
 
-## Main Engine Loop
+### Main Engine Loop
 
 It is a very simple while loop.
 
@@ -61,37 +66,15 @@ while( !IsEngineExitRequested() )
 }
 ```
 
-## Blueprint
-
-All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
-The `UEdGraph` is a simple graph data structure that listeners on every node.
-
-The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
-
-## Visual Effects
-
-## Resource Manager
-
-Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
-`uasset` files.
-
-## Target Hardware
+### Target Hardware
 
 This layer is platform-specific, such as optimizations made for different computer or console systems.
 
-## Collision & Physics
+## Drivers Layer
 
-This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from). Calling it physics is a bit of a
-misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
+## 3rd Party SDKs Layer
 
-Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics & collision engine. Hence, Unreal Engine 
-uses Nvidia's PhysX SDK, which is a free and open source. It does however have some of custom implementation such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
-
-Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to represent dynamic and static rigid bodies.
-
-Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
-
-## Core Systems
+## Core Systems Layer
 
 ### Data Structures & Algorithms
 
@@ -193,11 +176,6 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 | NoneOf | Returns true if the given predicate returns false for all elements in the range. | std::none_of | boost::algorithm::none_of |
 | Find | Returns an iterator to the first element in the range that matches the given value. | std::find | boost::algorithm::find |
 
-
-
-
-
-
 ### Automation
 
 #### Unit Testing
@@ -229,21 +207,21 @@ The base class for components is the `UActorComponent`.
 | `UActorComponent`                          | Every component inherits from this class.                                                                                                                                                                                           |
 | `UApplicationLifecycleComponent`           | For handling notifications received from the OS about the application state (low power mode, temperature changed, received startup, activated, suspended, termination, etc). Most of these notifications are sent via CoreDelegates |
 | `UArrowComponent`                          | A PrimitiveComponent (which means it renders unlike ActorComponent) that renders a simple arrow using lines. Can be used to indicate which way an object is facing.                                                                 |
-| `UAudioComponent`                          | 
-| `UBillboardComponent`                       
-| `UBoundsCopyComponent`                      
-| `UBoxComponent`                             
-| `UBoxReflectionCaptureComponent`            
-| `UBrushComponent`                           
-| `UCapsuleComponent`                         
-| `UChildActorComponent`                      
-| `UDecalComponent`                           
-| `UDirectionalLightComponent`                
-| `UDrawFrustumComponent`                     
-| `UDrawSphereComponent`                      
-| `UExponentialHeightFogComponent`            
-| `UForceFeedbackComponent`                   
-| `UHierarchicalInstancedStaticMeshComponent` 
+| `UAudioComponent`                          |
+| `UBillboardComponent`
+| `UBoundsCopyComponent`
+| `UBoxComponent`
+| `UBoxReflectionCaptureComponent`
+| `UBrushComponent`
+| `UCapsuleComponent`
+| `UChildActorComponent`
+| `UDecalComponent`
+| `UDirectionalLightComponent`
+| `UDrawFrustumComponent`
+| `UDrawSphereComponent`
+| `UExponentialHeightFogComponent`
+| `UForceFeedbackComponent`
+| `UHierarchicalInstancedStaticMeshComponent`
 | `UInputComponent`
 | `UInstancedStaticMeshComponent`
 | `UInterpToMovementComponent`
@@ -290,17 +268,46 @@ The base class for components is the `UActorComponent`.
 | `UWindDirectionalSourceComponent`
 | `UWorldPartitionStreamingSourceComponent`
 
+## Blueprint
 
-## Gameplay Ability System
+All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
+The `UEdGraph` is a simple graph data structure that listeners on every node.
+
+The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
+
+## Visual Effects Layer
+
+## Resources (Game Assets) Layer
+
+### Resource Manager
+
+Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
+`uasset` files.
+
+## Collision & Physics
+
+This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from). Calling it physics is a bit of a
+misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
+
+Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics & collision engine. Hence, Unreal Engine 
+uses Nvidia's PhysX SDK, which is a free and open source. It does however have some of custom implementation such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
+
+Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to represent dynamic and static rigid bodies.
+
+Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
+
+## Gameplay Foundations Layer
+
+### Gameplay Ability System
 
 The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
 have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
 obvious heavy user of abilities at scale.
 
-### Gameplay Tags
+#### Gameplay Tags
 
 Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
 An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
-### Gameplay Effects
+#### Gameplay Effects
 
