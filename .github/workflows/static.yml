@@ -33,8 +33,10 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
-      - name: Markdown to HTML
-        uses: lifepal/markdown-to-html@v1.2
+      - name: Convert Markdown to HTML
+        uses: jd-solanki/gh-action-md-to-html@v1.1.0
+        with:
+          files: '["README.md","index.html"]'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
