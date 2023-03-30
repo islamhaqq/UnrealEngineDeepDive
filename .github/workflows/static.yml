@@ -38,6 +38,7 @@ jobs:
         with:
           files: '[["README.md","index.html"]]'
           debug: true
+          theme: "Dark"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
