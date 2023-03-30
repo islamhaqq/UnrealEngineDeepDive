@@ -36,7 +36,7 @@ To keep the project modular, many features such as the Gameplay Ability System a
 ## Target Hardware Layer
 
 This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
-The Quake 2 engine, for example, had significant optimizations made for the Intel's Pentium processor and its pre-fetching cache due to their popularity at the time.
+The Quake 2 engine, for example, had significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php) due to their popularity at the time.
 
 ### Entry Point
 
@@ -73,7 +73,22 @@ while( !IsEngineExitRequested() )
 
 ### Apple
 
-Apple-hardware specific code is under `Core/Apple`.
+Apple-hardware specific code is under `Runtime/Core/Apple`.
+
+```c++
+// Core/Private/Apple/ApplePlatformMemory.cpp
+
+// In this file, we keep track of the amount of memory we've allocated.
+
+#include <stdlib.h> // c standard library
+#include <objc/runtime.h> // for inspecting and manipulating Objective-C runtime data structures
+#if PLATFORM_IOS && defined(__IPHONE_13_0) // Include only for iOS 13+
+#include <os/proc.h> // in order to call os_proc_available_memory  which determines the amount of memory available to the current app (your game running on the iPhone)
+#endif // Only need to include one header specific to iOS 13+.
+#include <CoreFoundation/CFBase.h>
+#include "HAL/LowLevelMemTracker.h"
+#include "Apple/AppleLLM.h"
+```
 
 ```c++
 /**
