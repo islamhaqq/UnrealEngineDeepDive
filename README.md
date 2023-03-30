@@ -4,8 +4,7 @@ Wanting a fast way to learn the insides of Unreal Engine, I inquired the UE dev 
 begins my journey to understand the engine, write notes on my findings, and share it.
 
 Although there may not be many resources on unraveling the engine code, there are a plethora of resources that help in
-understanding the
-engine. [Game Engine Architecture by Jason Gregory](https://www.goodreads.com/book/show/6709076-game-engine-architecture)
+understanding the engine. [Game Engine Architecture by Jason Gregory](https://www.goodreads.com/book/show/6709076-game-engine-architecture)
 is a great resource on understanding Unreal Engine, and game engines in general.
 
 ## Runtime Engine Architecture
@@ -14,32 +13,20 @@ Unreal Engine, like all software systems and game engines, is built in layers. I
 maintain modularity and avoid circular dependencies, the lower layers do not depend on
 upper layers.
 
-The upper-most layers contain game runtime classes including `PlayerController` and
-`GameModeBase`.
+The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
+`GameModeBase`. The lower layers contain hardware-specific implementation such as `Runtime/Unix`.
 
-```mermaid
-classDiagram
-    Animal <|-- Duck
-    Animal <|-- Fish
-    Animal <|-- Zebra
-    Animal : +int age
-    Animal : +String gender
-    Animal: +isMammal()
-    Animal: +mate()
-    class Duck{
-      +String beakColor
-      +swim()
-      +quack()
-    }
-    class Fish{
-      -int sizeInFeet
-      -canEat()
-    }
-    class Zebra{
-      +bool is_wild
-      +run()
-    }
-```
+From top to bottom, the layers are:
+* GameFramework, Rendering, Collision & Physics, Animation, AI, HID Audio, Input
+* Resources (Resource Manager)
+* Core Systems
+* Platform Independence Layer (Networking, File System)
+* 3rd Party SDKs (DirectX, OpenGL, PhysX)
+* OS
+* Drivers
+* Hardware
+
+To keep the project modular, many Engine features are separated out into optional Plugins, while core components are under `Source`.
 
 ## Entry Point
 
@@ -87,3 +74,15 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 
 Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
 `uasset` files.
+
+## Target Hardware
+
+This layer is platform-specific, such as optimizations made for different computer or console systems.
+
+## Components
+
+Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
+of is-a relationships. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing into
+a mess of tightly coupled code that takes longer to compile and harder to maintain.
+
+The base class for components is the `UActorComponent`.
