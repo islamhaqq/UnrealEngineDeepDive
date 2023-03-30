@@ -3,10 +3,6 @@
 There are not many resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation.
 This should help fill in the gaps for those who are interested in learning more about the engine.
 
-Although there may not be many resources on unraveling the engine code, there are however a plethora of resources that help in
-understanding game engines in general. [Game Engine Architecture by Jason Gregory](https://www.goodreads.com/book/show/6709076-game-engine-architecture)
-is a great resource that will help you understand Unreal Engine.
-
 **Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the bottom of the document.
 Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
@@ -90,6 +86,15 @@ while( !IsEngineExitRequested() )
 
 ## Operating System Layer
 
+### Windows
+
+### MacOS
+
+### Linux
+
+### IOS
+
+
 ## 3rd Party SDKs Layer
 
 ### Graphics
@@ -100,25 +105,22 @@ while( !IsEngineExitRequested() )
 
 #### OpenGL
 
+### Physics & Collision
+
+#### PhysX
+
+
 ## Platform Independence Layer
-
-### Networking
-
+### Platform Detection
+### Primitive Data Types
+### Collections & Iterators
 ### File System
-
-### Threading
-
+### Networking
+### Hi-Res Timer
+### Threading Library
 ### Graphics Wrappers
-
 ### Physics & Collision Wrappers
 
-### Hi-Res Timer
-
-### Collections & Iterators
-
-### Primitive Data Types
-
-### Platform Detection
 
 ## Core Systems Layer
 
@@ -227,7 +229,9 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 | Find | Returns an iterator to the first element in the range that matches the given value. | std::find | boost::algorithm::find |
 
 ### Module Start-Up and Shut-Down
+
 ### Assertions
+
 ### Automation
 
 #### Unit Testing
@@ -264,14 +268,30 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 
 ### Asynchronous File I/O
 
+
 ## Resources (Game Assets) Layer
 
-### UnrealEd
-
-### Resource Manager
+### Resource Manager (UnrealEd)
 
 Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
 `uasset` files.
+
+### 3D Model Resource
+
+### Texture Resource
+
+### Material Resource
+
+### Font Resource
+
+### Skeleton Resource
+
+### Collision Resource
+
+### Physics Parameters
+
+### Game World/Map
+
 
 ## Collision & Physics Layer
 
@@ -285,7 +305,18 @@ Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to re
 
 Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 
-#### Gameplay Effects
+### Forces & Constraints
+
+### Ray/Shape Casting (Queries)
+
+### Rigid Bodies
+
+### Phantoms
+
+### Shapes / Collidables
+
+### Physics/Collision World
+
 
 ## World Builder Layer (Tool Suite) - Unreal Editor
 
@@ -301,36 +332,154 @@ Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 
 #### Physics editor
 
+
+
 ## Human Interface Devices (HID) Layer
+
+### Game-Specific Interface
+
+### Physical Device I/O
+
 
 ## Profiling & Debugging Layer
 
+### Recording & Playback
+
+### Memory & Performance Stats
+
+### In-Game Menus or Console
+
+
 ## Low-Level Renderer Layer
+
+### Materials & Shaders
+
+### Static & Dynamic Lighting
+
+### Cameras
+
+### Text & Fonts
+
+### Primitive Submission
+
+### Viewports & Virtual Screens
+
+### Texture & Surface Management
+
+### Debug Drawing (Lines etc.)
+
 
 ## Scene Graph / Culling Optimizations Layer
 
-## Skeletal Animation layer
+### Spatial Hash (BSP, Tree, kd-Tree, ...)
 
-## Audio Layer
+### Occlusion & PVS
 
-## Online Multiplayer Layer
+### LOD System
 
-## Front End Layer
 
 ## Visual Effects Layer
 
+### Light Mapping & Dynamic Shadows
+
+### HDR Lighting
+
+### PRT Lighting, Subsurface Scatter
+
+### Particle & Decal Systems
+
+### Post Effects
+
+### Environment Mapping
+
+
+## Front End Layer
+
+### Heads-Up Display (HUD)
+
+### Full-Motion Video (FMV)
+
+### In-Game Cinematics (IGC)
+
+### In-Game GUI
+
+### In-Game Menus
+
+### Wrappers / Attract Mode
+
+
+## Skeletal Animation layer
+
+### Animation State Tree & Layers
+
+### Inverse Kinematics (IK)
+
+### Hierarchical Object Attachment (+Gameplay Foundations Layer)
+
+### Game-Specific Post-Processing
+
+### LERP and Additive Blending
+
+### Animation Playback
+
+### Sub-skeletal Animation
+
+### Animation Decompression
+
+### Skeletal Mesh Rendering (+Low-Level Renderer Layer)
+
+### Ragdoll Physics (+Collision & Physics Layer)
+
+
+## Audio Layer
+
+### DSP/Effects
+
+### 3D Audio Model
+
+### Audio Playback / Management
+
+
+## Online Multiplayer Layer
+
+### Matchmaking & Game Management
+
+### Object Authority Policy
+
+### Game State Replication
+
+
 ## Gameplay Foundations Layer
 
-### UObject
+### High-Level Game Flow System/FSM
+
+### Scripting System
+
+#### UnrealScript
+
+#### Blueprint
+
+All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
+The `UEdGraph` is a simple graph data structure that listeners on every node.
+
+The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
+
+#### Verse
+
+### Static World Elements
+
+### Dynamic Game Object Model
+
+#### UObject
 
 All objects in the engine are derived from this class.
 
-### UActor
+#### UActor
 
 The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
 `UObject` with a transform.
 
-### Composition OOP Design Pattern - Components
+#### Composition OOP Design Pattern - Components
 
 Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
 of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
@@ -339,7 +488,7 @@ a mess of tightly coupled code that takes longer to compile and harder to mainta
 
 The base class for components is the `UActorComponent`.
 
-#### Table of Components
+##### Table of Components
 
 | Component                     | Description                                                                                                                                                                                                                         |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -407,23 +556,12 @@ The base class for components is the `UActorComponent`.
 | UWindDirectionalSourceComponent
 | UWorldPartitionStreamingSourceComponent
 
-### Gameplay Ability System
+### Real-Time Agent-Based Simulation
 
-The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
-have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
-obvious heavy user of abilities at scale.
+### Event/Messaging System
 
-### Gameplay Tags
+### World Loading / Streaming
 
-Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
-An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
-
-### Blueprint
-
-All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
-The `UEdGraph` is a simple graph data structure that listeners on every node.
-
-The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
 
 ## Game-Specific Subsystems Layer
 
@@ -437,7 +575,20 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 
 #### State Machine & Animation
 
-#### Camera-Relative Controls (HID)
+##### Gameplay Ability System
+
+The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
+have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
+obvious heavy user of abilities at scale.
+
+###### Gameplay Effects
+
+###### Gameplay Tags
+
+Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
+An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
+
+#### Camera-Relative Controls (HID) (+Game Cameras)
 
 #### Collision Manifold
 
