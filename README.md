@@ -10,7 +10,7 @@ Otherwise, start from the top, as understanding the lower layers will help you u
 
 Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
-Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its competitor Quake Engine) and Quake Engine has the tool suite (UnrealEd) built into the runtime engine instead of as a separate executable.
+Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its competitor Quake Engine) and Quake Engine has the tool suite (UnrealEd) built directly into the runtime engine.
 There are a lot of benefits for this, most importantly that PIE is possible in-editor without performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors such as reducing code duplication between the two.
 There are also drawbacks in developer productivity due to locking of files preventing simultaneous editing of assets. More on this later.
 
