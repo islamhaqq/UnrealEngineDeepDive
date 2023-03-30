@@ -101,6 +101,92 @@ the C++ Standard Template Library, nor third-parties like Boost, Folly, or Loki.
 structures and algorithms C++ library that shares similar style to its predecessor STL. However, for an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`). Many of the
 third party libraries included by UE, however, do use Boost.
 
+#### Container Table
+
+Unreal Engine defines most if not all its containers in `Runtime/Core/Public/Containers`.
+
+| Container | Description                                                                                                                                                                                    | STL Equivalent | Boost Equivalent |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|------------------|
+| TAllocatorFixedSizeFreeList | Fixed size free list allocator                                                                                                                                                                 | - | boost::container::static_vector_allocator |
+| TArray    | Dynamic array                                                                                                                                                                                  | std::vector | boost::container::vector |
+| TArrayView | A statically sized view of an array of typed elements (it does not have add or remove). Designed for functions to take in as an argument where the function does not need to mutate the array. | - | boost::container::vector |
+| TSet      | Set                                                                                                                                                                                            | std::set | boost::container::set |
+| TMap      | Map                                                                                                                                                                                            | std::map | boost::container::map |
+| TQueue    | Queue                                                                                                                                                                                          | std::queue | boost::container::queue |
+| TLinkedList | Linked list                                                                                                                                                                                    | std::list | boost::container::list |
+| TDoubleLinkedList | Double linked list                                                                                                                                                                             | std::list | boost::container::list |
+
+HTML Table Version:
+
+<table>
+  <thead>
+    <tr>
+      <th>Container</th>
+      <th>Description</th>
+      <th>STL Equivalent</th>
+      <th>Boost Equivalent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TAllocatorFixedSizeFreeList</td>
+      <td>Fixed size free list allocator</td>
+      <td>-</td>
+      <td>boost::container::static_vector_allocator</td>
+    </tr>
+    <tr>
+      <td>TArray</td>
+      <td>Dynamic array</td>
+      <td>std::vector</td>
+      <td>boost::container::vector</td>
+    </tr>
+    <tr>
+      <td>TArrayView</td>
+      <td>A statically sized view of an array of typed elements (it does not have add or remove). Designed for functions to take in as an argument where the function does not need to mutate the array.
+        ```cpp
+        int32 SumAll(TArrayView<const int32> array)
+        { 
+            return Algo::Accumulate(array);
+        }
+        ```
+        </td>
+      <td>-</td>
+      <td>boost::container::vector</td>
+    </tr>
+    <tr>
+      <td>TSet</td>
+      <td>Set</td>
+      <td>std::set</td>
+      <td>boost::container::set</td>
+    </tr>
+    <tr>
+      <td>TMap</td>
+      <td>Map</td>
+      <td>std::map</td>
+      <td>boost::container::map</td>
+    </tr>
+    <tr>
+      <td>TQueue</td>
+      <td>Queue</td>
+      <td>std::queue</td>
+      <td>boost::container::queue</td>
+    </tr>
+    <tr>
+      <td>TLinkedList</td>
+      <td>Linked list</td>
+      <td>std::list</td>
+      <td>boost::container::list</td>
+    </tr>
+    <tr>
+      <td>TDoubleLinkedList</td>
+      <td>Double linked list</td>
+      <td>std::list</td>
+      <td>boost::container::list</td>
+    </tr>
+  </tbody>
+
+
+
 ### Automation
 
 #### Unit Testing
