@@ -96,10 +96,12 @@ Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 ### Data Structures & Algorithms
 
 All software systems require containers that allow for the storage and manipulation of data and algorithms that use these data structures to solve problems. Many projects use standard and
-third-party libraries that provide implementations of these data structure and algorithms. However, Unreal Engine opts for a custom solution due to performance benefits. It neither uses STL,
-the C++ Standard Template Library, nor third-parties like Boost, Folly, or Loki. Although it isn't used anywhere in the Engine, many of the custom implementations are inspired by Boost, a popular and powerful data
-structures and algorithms C++ library that shares similar style to its predecessor STL. However, for an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`). Many of the
-third party libraries included by UE, however, do use Boost.
+third-party libraries that provide implementations of these data structure and algorithms.
+
+However, Unreal Engine neither uses STL, the C++ Standard Template Library, nor third-parties like Boost, Folly, or Loki. It opts for a custom solution for performance benefits. Although it isn't used anywhere in the Engine, many of the custom implementations are inspired by Boost, a popular and powerful data
+structures and algorithms C++ library that shares similar style to its predecessor STL. Many of the third party libraries included by UE, however, do use Boost.
+
+Note: For an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`).
 
 #### Container Table
 
@@ -114,7 +116,9 @@ Unreal Engine defines most if not all its containers in `Runtime/Core/Public/Con
 </tr>
 <tr>
 <td>TAllocatorFixedSizeFreeList</td>
-<td>Fixed size free list allocator</td>
+<td>Low-level container that allocates memory in fixed-size blocks. Its fixed-size property is more efficient compared to a heap allocator that allocates memory in variable sizes which leads to inefficiencies because otherwise the free list needs to be traversed to find the first 
+block that is large enough to fit the requested size. Instead, the fixed-size allocator can simply return the next block in the free list. The fixed-size allocator is also more efficient than a fixed-size allocator because it does not need to keep track of the size of each block.
+</td>
 <td>-</td>
 <td>boost::container::static_vector_allocator</td>
 </tr>
