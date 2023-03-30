@@ -11,8 +11,8 @@ Otherwise, start from the top, as understanding the lower layers will help you u
 Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
 Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its competitor Quake Engine) and Quake Engine has the tool suite (UnrealEd) built directly into the runtime engine.
-There are a lot of benefits for this, most importantly that PIE is possible in-editor without performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors such as reducing code duplication between the two.
-There are also drawbacks in developer productivity due to locking of files preventing simultaneous editing of assets. More on this later.
+There are a lot of benefits for this, most importantly that the game can run via PIE (PLay in Editor) in-editor without performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors
+such as reducing code duplication between the two. There are also drawbacks in developer productivity due to locking of files preventing simultaneous editing of assets. More on this later.
 
 # Runtime Engine Architecture
 
@@ -88,15 +88,15 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 #include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
 #endif                                       // Only need to include one header specific to iOS 13+.
 #include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems. for CFIndex
-#include "HAL/LowLevelMemTracker.h"          // for FPlatformMemoryStats and FLowLevelMemTracker in order to track memory allocations
-#include "Apple/AppleLLM.h"
+#include "HAL/LowLevelMemTracker.h"          // for FLowLevelMemTracker in order to track memory allocations
+#include "Apple/AppleLLM.h"                  // 
 
-// Skip
+// Skip ~250 lines including functions for memory allocation
 
 FMalloc* FApplePlatformMemory::BaseAllocator()
 {
 #if ENABLE_LOW_LEVEL_MEM_TRACKER
-	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats();
+	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats(); // FPlatformMemoryStats is the Apple implementation of FPlatformMemoryStats which contains memory numbers on available/used physical/virtual memory
 	FLowLevelMemTracker::Get().SetProgramSize(MemStats.UsedPhysical);
 #endif
 ```
