@@ -262,13 +262,6 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 
 ### Asynchronous File I/O
 
-## Blueprint
-
-All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
-The `UEdGraph` is a simple graph data structure that listeners on every node.
-
-The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
-
 ## Visual Effects Layer
 
 ## Resources (Game Assets) Layer
@@ -292,19 +285,6 @@ Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to re
 
 Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 
-## Gameplay Foundations Layer
-
-### Gameplay Ability System
-
-The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
-have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
-obvious heavy user of abilities at scale.
-
-#### Gameplay Tags
-
-Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
-An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
-
 #### Gameplay Effects
 
 ## Tool Suite - Unreal Editor
@@ -317,22 +297,22 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
 #### Animation Editor
 
-#### Animation BLueprint Editor
+#### Animation Blueprint Editor
 
 #### Physics editor
 
-### Gameplay Foundation Layer
+## Gameplay Foundations Layer
 
-#### UObject
+### UObject
 
 All objects in the engine are derived from this class.
 
-#### UActor
+### UActor
 
 The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
 `UObject` with a transform.
 
-#### Composition OOP Design Pattern - Components
+### Composition OOP Design Pattern - Components
 
 Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
 of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
@@ -341,7 +321,7 @@ a mess of tightly coupled code that takes longer to compile and harder to mainta
 
 The base class for components is the `UActorComponent`.
 
-##### Table of Components
+#### Table of Components
 
 | Component                     | Description                                                                                                                                                                                                                         |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -408,3 +388,21 @@ The base class for components is the `UActorComponent`.
 | UVolumetricCloudComponent
 | UWindDirectionalSourceComponent
 | UWorldPartitionStreamingSourceComponent
+
+### Gameplay Ability System
+
+The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
+have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
+obvious heavy user of abilities at scale.
+
+### Gameplay Tags
+
+Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
+An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
+
+### Blueprint
+
+All the graph editor tools are behind the scenes a `UEdGraph`. This includes Blueprint, Material, and Animation graphs.
+The `UEdGraph` is a simple graph data structure that listeners on every node.
+
+The all the graphs for a Blueprint, such as the Event Graph, are combined into an Ubergraph.
