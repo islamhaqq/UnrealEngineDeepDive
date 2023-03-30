@@ -84,11 +84,21 @@ This layer is platform-specific, such as optimizations made for different comput
 This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from). Calling it physics is a bit of a
 misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
 
-Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics engine. Hence, Unreal Engine 
-uses Nvidia's PhysX SDK, which is a free industrial-strength physics and collision engine. It does however have some of custom implementation such
-as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
+Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics & collision engine. Hence, Unreal Engine 
+uses Nvidia's PhysX SDK, which is a free and open source. It does however have some of custom implementation such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
+
+Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to represent dynamic and static rigid bodies.
 
 Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
+
+## UObject
+
+All objects in the engine are derived from this class.
+
+## UActor
+
+The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
+`UObject` with a transform.
 
 ## Components
 
