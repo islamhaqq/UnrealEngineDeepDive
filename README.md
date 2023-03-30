@@ -127,14 +127,20 @@ Unreal Engine defines most if not all its containers in `Runtime/Core/Public/Con
 <tr>
 <td>TArrayView</td>
 <td>
-A statically sized view of an array of typed elements (it does not have add or remove). Designed for functions to take in as an argument where the function does not need to mutate the array.
+A statically sized (it does not have add or remove) view (it is a representation of a real array) of an array of typed elements. Designed for functions to take in as an argument where the function does not need to mutate the array.
 
-Example:
 ```cpp
-int32 SumAll(TArrayView<const int32> array)
+// e.g.: SumAll takes in an array and returns the sum of all the elements, notice it does not mutate the array since accumulate is a const function
+int32 SumAll(TArrayView<const int32> array) const
 { 
     return Algo::Accumulate(array);
 }
+
+int32 sum = SumAll({1, 2, 3, 4, 5}); // You can pass whatever array type you want, as long as it is a view of an array of int32
+TArray<int32> MyTArray = {1, 2, 3, 4, 5}; // TArray is fine too
+sum = SumAll(MyTArray); // The TArray is treated as a view
+CArray<int32, 5> MyCArray = {1, 2, 3, 4, 5}; // CArray is fine too
+sum = SumAll(MyCArray);
 ```
 </td>
 <td>-</td>
