@@ -103,7 +103,8 @@ The word "Actor" is not a term unique to Unreal Engine, and can be found even in
 ## Components
 
 Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
-of is-a relationships. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing into
+of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
+reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing into
 a mess of tightly coupled code that takes longer to compile and harder to maintain.
 
 The base class for components is the `UActorComponent`.
