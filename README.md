@@ -87,9 +87,12 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 #if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iOS 13+
 #include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
 #endif                                       // Only need to include one header specific to iOS 13+.
-#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems. for CFIndex
+#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems, types used: CFIndex is a typedef for a signed integer type (SInt32) used to represent indices into a CFArray or CFString
+                                             // CFOptionFlags is a typedef for an unsigned integer type (UInt32) used to represent bitfields for passing special allocations into CF funcs.
+                                             // CFAllocatorContext is a struct containing callbacks for allocating, deallocating, and reallocating memory, and for retaining and releasing objects.
+
 #include "HAL/LowLevelMemTracker.h"          // for FLowLevelMemTracker in order to track memory allocations
-#include "Apple/AppleLLM.h"                  // 
+#include "Apple/AppleLLM.h"                  // Apple's Low-Level Memory Tracker which tracks all allocations from the OS. This is all eventually used by 
 
 // Skip ~250 lines including functions for memory allocation
 
