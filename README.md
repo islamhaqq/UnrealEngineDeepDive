@@ -10,6 +10,12 @@ is a great resource that will help you understand Unreal Engine.
 **Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the bottom of the document.
 Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
+## Two Parts
+
+Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
+
+Note: Unreal Engine (taken from Quake Engine architecture) is different from most other engines in that the tool suite (UnrealEd) is built into the runtime engine. 
+
 ## Runtime Engine Architecture
 
 Unreal Engine, like all software systems and game engines, is built in layers. In order to
@@ -32,6 +38,8 @@ From top to bottom, the layers are:
 To keep the project modular, many features such as the Gameplay Ability System are separated out into optional Plugins, while core components are under `Source`.
 
 ## Hardware Layer
+
+This layer is platform-specific, such as optimizations made for different computer or console systems.
 
 ### Entry Point
 
@@ -66,13 +74,49 @@ while( !IsEngineExitRequested() )
 }
 ```
 
-### Target Hardware
+### Xbox
 
-This layer is platform-specific, such as optimizations made for different computer or console systems.
+### Playstation
+
+### Nintendo
+
+### Mobile
+
+### Web
+
+### VR
 
 ## Drivers Layer
 
 ## 3rd Party SDKs Layer
+
+### Graphics
+
+#### DirectX
+
+#### Vulkan
+
+#### OpenGL
+
+## Platform Independence Layer
+
+### Networking
+
+### File System
+
+### Threading
+
+### Graphics Wrappers
+
+### Physics & Collision Wrappers
+
+### Hi-Res Timer
+
+### Collections & Iterators
+
+### Primitive Data Types
+
+### Platform Detection
 
 ## Core Systems Layer
 
@@ -86,7 +130,9 @@ structures and algorithms C++ library that shares similar style to its predecess
 
 Note: For an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`).
 
-#### Container Table
+#### Data Structures
+
+##### Container Table
 
 Unreal Engine defines most if not all its containers in `Runtime/Core/Public/Containers`.
 
@@ -167,6 +213,8 @@ sum = SumAll(MyCArray);
 
 #### Algorithms
 
+##### Algorithm Table
+
 Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Algo`.
 
 | Algorithm | Description | STL Equivalent | Boost Equivalent |
@@ -176,97 +224,43 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 | NoneOf | Returns true if the given predicate returns false for all elements in the range. | std::none_of | boost::algorithm::none_of |
 | Find | Returns an iterator to the first element in the range that matches the given value. | std::find | boost::algorithm::find |
 
+### Module Start-Up and Shut-Down
+### Assertions
 ### Automation
 
 #### Unit Testing
 
 #### Gauntlet
 
-## UObject
+### Memory Allocation
 
-All objects in the engine are derived from this class.
+### Math Library
 
-## UActor
+### Strings and Hashed String Ids
 
-The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
-`UObject` with a transform.
+#### FName
 
-## Composition OOP Design Pattern - Components
+### Debug Printing and Logging
 
-Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
-of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
-reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing files into
-a mess of tightly coupled code that takes longer to compile and harder to maintain due to everything depending on each other.
+### Localization Services
 
-The base class for components is the `UActorComponent`.
+### Movie Player
 
-### Table of Components
+### Parsers
 
-| Component                                  | Description                                                                                                                                                                                                                         |
-|--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `UActorComponent`                          | Every component inherits from this class.                                                                                                                                                                                           |
-| `UApplicationLifecycleComponent`           | For handling notifications received from the OS about the application state (low power mode, temperature changed, received startup, activated, suspended, termination, etc). Most of these notifications are sent via CoreDelegates |
-| `UArrowComponent`                          | A PrimitiveComponent (which means it renders unlike ActorComponent) that renders a simple arrow using lines. Can be used to indicate which way an object is facing.                                                                 |
-| `UAudioComponent`                          |
-| `UBillboardComponent`
-| `UBoundsCopyComponent`
-| `UBoxComponent`
-| `UBoxReflectionCaptureComponent`
-| `UBrushComponent`
-| `UCapsuleComponent`
-| `UChildActorComponent`
-| `UDecalComponent`
-| `UDirectionalLightComponent`
-| `UDrawFrustumComponent`
-| `UDrawSphereComponent`
-| `UExponentialHeightFogComponent`
-| `UForceFeedbackComponent`
-| `UHierarchicalInstancedStaticMeshComponent`
-| `UInputComponent`
-| `UInstancedStaticMeshComponent`
-| `UInterpToMovementComponent`
-| `ULightComponent`
-| `ULightComponentBase`
-| `ULightmassPortalComponent`
-| `ULineBatchComponent`
-| `ULocalLightComponent`
-| `ULODSyncComponent`
-| `UMaterialBillboardComponent`
-| `UMeshComponent`
-| `UModelComponent`
-| `UPawnNoiseEmitterComponent`
-| `UPlanarReflectionComponent`
-| `UPlaneReflectionCaptureComponent`
-| `UPlatformEventsComponent`
-| `UPointLightComponent`
-| `UPoseableMeshComponent`
-| `UPostProcessComponent`
-| `UPrimitiveComponent`                      | An ActorComponent that can be rendered.                                                                                                                                                                                             |
-| `URectLightComponent`
-| `UReflectionCaptureComponent`
-| `URuntimeVirtualTextureComponent`
-| `USceneCaptureComponent`
-| `USceneCaptureComponent2D`
-| `USceneCaptureComponentCube`
-| `USceneComponent`                           | An ActorComponent that has a transform.                                                                                                                                                                                             |
-| `UShapeComponent`
-| `USkeletalMeshComponent`
-| `USkinnedMeshComponent`
-| `USkyAtmosphereComponent`
-| `USkyLightComponent`
-| `USphereComponent`
-| `USphereReflectionCaptureComponent`
-| `USplineComponent`
-| `USplineMeshComponent`
-| `USpotLightComponent`
-| `UStaticMeshComponent`
-| `UStereoLayerComponent`
-| `UTextRenderComponent`
-| `UTimelineComponent`
-| `UVectorFieldComponent`
-| `UVolumetricCloudComponent`
-| `UWindDirectionalSourceComponent`
-| `UWorldPartitionStreamingSourceComponent`
+### Profiling / Stats Gathering
+
+### Engine Config
+
+### Random Number Generator
+
+### Curves & Surfaces Library
+
+### RTTI / Reflection & Serialization
+
+### Object Handles / Unique Ids
+
+### Asynchronous File I/O
 
 ## Blueprint
 
@@ -278,6 +272,8 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 ## Visual Effects Layer
 
 ## Resources (Game Assets) Layer
+
+### UnrealEd
 
 ### Resource Manager
 
@@ -311,3 +307,104 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
 #### Gameplay Effects
 
+## Tool Suite - Unreal Editor
+
+### Skeletons and Animation
+
+#### Skeleton Editor
+
+#### Skeletal Mesh Editor
+
+#### Animation Editor
+
+#### Animation BLueprint Editor
+
+#### Physics editor
+
+### Gameplay Foundation Layer
+
+#### UObject
+
+All objects in the engine are derived from this class.
+
+#### UActor
+
+The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
+`UObject` with a transform.
+
+#### Composition OOP Design Pattern - Components
+
+Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
+of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
+reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing files into
+a mess of tightly coupled code that takes longer to compile and harder to maintain due to everything depending on each other.
+
+The base class for components is the `UActorComponent`.
+
+##### Table of Components
+
+| Component                     | Description                                                                                                                                                                                                                         |
+|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ActorComponent                | Every component inherits from this class.                                                                                                                                                                                           |
+| ApplicationLifecycleComponent | For handling notifications received from the OS about the application state (low power mode, temperature changed, received startup, activated, suspended, termination, etc). Most of these notifications are sent via CoreDelegates |
+| UArrowComponent               | A PrimitiveComponent (which means it renders unlike ActorComponent) that renders a simple arrow using lines. Can be used to indicate which way an object is facing.                                                                 |
+| UAudioComponent               |
+| UBillboardComponent
+| UBoundsCopyComponent
+| UBoxComponent
+| UBoxReflectionCaptureComponent
+| UBrushComponent
+| UCapsuleComponent
+| UChildActorComponent
+| UDecalComponent
+| UDirectionalLightComponent
+| UDrawFrustumComponent
+| UDrawSphereComponent
+| UExponentialHeightFogComponent
+| UForceFeedbackComponent
+| UHierarchicalInstancedStaticMeshComponent
+| UInputComponent
+| UInstancedStaticMeshComponent
+| UInterpToMovementComponent
+| ULightComponent
+| ULightComponentBase
+| ULightmassPortalComponent
+| ULineBatchComponent
+| ULocalLightComponent
+| ULODSyncComponent
+| UMaterialBillboardComponent
+| UMeshComponent
+| UModelComponent
+| UPawnNoiseEmitterComponent
+| UPlanarReflectionComponent
+| UPlaneReflectionCaptureComponent
+| UPlatformEventsComponent
+| UPointLightComponent
+| UPoseableMeshComponent
+| UPostProcessComponent
+| UPrimitiveComponent           | An ActorComponent that can be rendered.                                                                                                                                                                                             |
+| URectLightComponent
+| UReflectionCaptureComponent
+| URuntimeVirtualTextureComponent
+| USceneCaptureComponent
+| USceneCaptureComponent2D
+| USceneCaptureComponentCube
+| USceneComponent               | An ActorComponent that has a transform.                                                                                                                                                                                             |
+| UShapeComponent
+| USkeletalMeshComponent
+| USkinnedMeshComponent
+| USkyAtmosphereComponent
+| USkyLightComponent
+| USphereComponent
+| USphereReflectionCaptureComponent
+| USplineComponent
+| USplineMeshComponent
+| USpotLightComponent
+| UStaticMeshComponent
+| UStereoLayerComponent
+| UTextRenderComponent
+| UTimelineComponent
+| UVectorFieldComponent
+| UVolumetricCloudComponent
+| UWindDirectionalSourceComponent
+| UWorldPartitionStreamingSourceComponent
