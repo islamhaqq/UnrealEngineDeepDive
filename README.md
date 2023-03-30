@@ -38,7 +38,6 @@ To keep the project modular, many features such as the Gameplay Ability System a
 This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
 The Quake 2 engine, for example, had significant optimizations made for the Intel's Pentium processor and its pre-fetching cache due to their popularity at the time.
 
-
 ### Entry Point
 
 The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`.
@@ -51,7 +50,7 @@ Each supported platform has their respective entry point:
 * Linux: `int main` in `Linux/LaunchLinux.cpp`
 * IOS: `int main` in `IOS/LaunchIOS.cpp`
 
-```cpp
+```c++
 // Windows specific parameters: HINSTANCE is identification to prevent class name clashing
 int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ char* pCmdLine, _In_ int32 nCmdShow)
 {
@@ -65,11 +64,41 @@ int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstanc
 
 It is a very simple while loop.
 
-```cpp
+```c++
 while( !IsEngineExitRequested() )
 {
     EngineTick();
 }
+```
+
+### Apple
+
+Apple-hardware specific code is under `Core/Apple`.
+
+```c++
+/**
+ * Apple implementation of the Atomics OS functions
+ **/
+struct CORE_API FApplePlatformAtomics : public FClangPlatformAtomics
+{
+#if	PLATFORM_HAS_128BIT_ATOMICS
+	static FORCEINLINE bool InterlockedCompareExchange128( volatile FInt128* Dest, const FInt128& Exchange, FInt128* Comparand )
+	{
+		__uint128_t* Expected = ((__uint128_t*)Comparand);
+		__uint128_t Desired = ((__uint128_t const&)Exchange);
+		return __atomic_compare_exchange_16((volatile __uint128_t*)Dest, Expected, Desired, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+	}
+	
+	/**
+	 * @return true, if the processor we are running on can execute compare and exchange 128-bit operation.
+	 * @see cmpxchg16b, early AMD64 processors don't support this operation.
+	 */
+	static FORCEINLINE bool CanUseCompareExchange128()
+	{
+		return true;
+	}
+#endif
+};
 ```
 
 ### Xbox
@@ -85,6 +114,7 @@ while( !IsEngineExitRequested() )
 ### VR
 
 ## Drivers Layer
+
 
 ## Operating System Layer
 
@@ -114,12 +144,13 @@ while( !IsEngineExitRequested() )
 
 ## Platform Independence Layer
 
-Everything under `Runtime/Core/Public/HAL` represents the Hardware Abstraction Layer (HAL).
-For example, `Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
-The `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
-
+Unreal Engine's Platform Independence Layer is called the **Hardware Abstraction layer (HAL).** Everything under `Runtime/Core/Public/HAL` falls under this layer.
 
 ### Platform Detection
+
+`Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
+The `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
+
 ### Primitive Data Types
 ### Collections & Iterators
 ### File System
@@ -174,7 +205,7 @@ block that is large enough to fit the requested size. Instead, the fixed-size al
 <td>
 A statically sized (it does not have add or remove) view (it is a representation of a real array) of an array of typed elements. Designed for functions to take in as an argument where the function does not need to mutate the array.
 
-```cpp
+```c++
 // e.g.: SumAll takes in an array and returns the sum of all the elements, notice it does not mutate the array since accumulate is a const function
 int32 SumAll(TArrayView<const int32> array) const
 { 
