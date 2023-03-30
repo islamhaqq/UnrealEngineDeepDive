@@ -35,11 +35,8 @@ To keep the project modular, many features such as the Gameplay Ability System a
 
 ## Target Hardware Layer
 
-This layer is platform-specific, such as optimizations made for different computer or console systems. The Quake 2 engine, for example, had significant optimizations
-made for the Intel's Pentium processors.
-
-Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations. For example, the `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
-`Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
+This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
+The Quake 2 engine, for example, had significant optimizations made for the Intel's Pentium processor and its pre-fetching cache due to their popularity at the time.
 
 
 ### Entry Point
@@ -116,6 +113,12 @@ while( !IsEngineExitRequested() )
 
 
 ## Platform Independence Layer
+
+Everything under `Runtime/Core/Public/HAL` represents the Hardware Abstraction Layer (HAL).
+For example, `Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
+The `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
+
+
 ### Platform Detection
 ### Primitive Data Types
 ### Collections & Iterators
