@@ -32,7 +32,7 @@ From top to bottom, the layers are:
 * Drivers
 * Hardware
 
-To keep the project modular, many features such as the Gameplay Ability System are separated out into optional Plugins, while core components are under `Source`.
+To keep the project modular, many features within these layers (e.g. Replication Graph, Gameplay Ability System) are separated out into optional Plugins.
 
 ## Target Hardware Layer
 
