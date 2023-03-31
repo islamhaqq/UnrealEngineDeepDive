@@ -526,17 +526,18 @@ this prevents memory leaks despite improper usage.
 
 There are 3 ways to keep them referenced in the internal reference graph:
 
-_1. With a strong reference (`UPROPERTY()`) to them from objects that are also referenced_
+1. With a strong reference (`UPROPERTY()`) to them from objects that are also referenced
 
-In other words, if a `UObject` does not have a `UPROPERTY` reference, there is a good chance it will be garbage collected away.
-`UActor`s and `UActorComponent`s are an e exception this rule, since the Actor is referenced by the `UWorld` (which is in the root set),
-and the Actor Component is referenced by the Actor itself.
+    In other words, if a `UObject` does not have a `UPROPERTY` reference, there is a good chance it will be garbage collected away.
+    `UActor`s and `UActorComponent`s are an e exception this rule, since the Actor is referenced by the `UWorld` (which is in the root set),
+    and the Actor Component is referenced by the Actor itself.
+    
+    Another practical implication of this is that once the owning `UActor` is destroyed, usually all of its `UActorComponent`s will be destroyed because
+    the Actor was the only `UObject` with a strong reference to them.
 
-Another practical implication of this is that once the owning `UActor` is destroyed, usually all of its `UActorComponent`s will be destroyed because
-the Actor was the only `UObject` with a strong reference to them.
+2. By calling `UObject::AddReferencedObjects` from objects that are also referenced
 
-_2. By calling `UObject::AddReferencedObjects` from objects that are also referenced_
-_3. By adding them to the root set with `UObject::AddToRoot`_
+3. By adding them to the root set with `UObject::AddToRoot`
 
 
 
