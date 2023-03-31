@@ -16,8 +16,7 @@ such as reducing code duplication between the two. There are also drawbacks in d
 
 # Runtime Engine Architecture
 
-Unreal Engine, like all software systems and game engines, is built in layers. In order to maintain testability, platform independence, re-usability/modularity,
-and avoid circular dependencies, the lower layers do not depend on upper layers.
+Unreal Engine, like all software systems and game engines, is built in layers. In order to avoid circular dependencies which negatively impact testability, platform independence, and re-usability/modularity, the lower layers do not depend on upper layers.
 
 The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
 `GameModeBase`. The lower layers contain hardware-specific implementation such as `Runtime/Unix`.
