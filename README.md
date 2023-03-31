@@ -502,7 +502,6 @@ All gameplay objects in the engine are derived from this class.
 	
 ![uobjectdiagram](https://user-images.githubusercontent.com/11065634/229152810-f9c3423a-10be-4d60-93a1-1f1dda037fd3.jpg)
 
-
 ```c++
 // UObjectBaseUtility.h
 
@@ -514,13 +513,6 @@ void UObjectBaseUtility::AddToRoot()                                        // A
 {                                                                           // GUObjectArray is the global array of all UObjects   
     GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();               // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
 }                                                                           // Set RootSet flag for object
-```
-
-```c++
-FORCEINLINE void SetRootSet()
-{
-    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet);
-}
 ```
 
 ##### Garbage Collection
