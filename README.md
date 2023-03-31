@@ -499,6 +499,9 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 #### UObject
 
 All gameplay objects in the engine are derived from this class.
+	
+![uobjectdiagram](https://user-images.githubusercontent.com/11065634/229152810-f9c3423a-10be-4d60-93a1-1f1dda037fd3.jpg)
+
 
 ```c++
 // UObjectBaseUtility.h
