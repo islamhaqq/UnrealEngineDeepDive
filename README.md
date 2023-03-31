@@ -500,6 +500,26 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 
 All gameplay objects in the engine are derived from this class.
 
+```c++
+// UObjectBaseUtility.h
+
+/**
+ * Add an object to the root set. This prevents the object and all
+ * its descendants from being deleted during garbage collection.
+ */
+void UObjectBaseUtility::AddToRoot()                                        // AddToRoot is actually FORCEINLINE. Showing scope resolution operator for ease of understanding                                       
+{                                                                           // GUObjectArray is the global array of all UObjects   
+    GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();               // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
+}                                                                           // Set RootSet flag for object
+```
+
+```c++
+FORCEINLINE void SetRootSet()
+{
+    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet);
+}
+```
+
 ##### Garbage Collection
 
 `UObjects` that are garbage collected when they are no longer referenced. Whenever they are created, they are automatically added
@@ -507,6 +527,26 @@ to an internal reference graph. The garbage collector tracks all referenced `UOb
 references, starting from the root set. The root set refers to the root of the reference graph which references a set of `UObject`s.
 This is also how `UObject`s are garbage collected: when they are unreferenced (e.g. not in the graph), they will be destroyed. Generally,
 this prevents memory leaks despite improper usage.
+
+```c++
+// Runtime/CoreUObject/Public/UObject/UObjectBaseUtility.h
+
+/**
+ * Add an object to the root set. This prevents the object and all
+ * its descendants from being deleted during garbage collection.
+ */
+FORCEINLINE void AddToRoot()
+{
+    GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();
+}
+```
+
+```c++
+// Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
+
+// Global UObject array instance
+FUObjectArray GUObjectArray; // Root set.
+```
 
 There are 3 ways to keep them referenced in the internal reference graph:
 
