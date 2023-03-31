@@ -511,7 +511,7 @@ flags to explicitly prevent garbage collection. One of these flags is the `EInte
 // Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
 
 // Global UObject array instance
-FUObjectArray GUObjectArray;                                   // To keep track all UObjects
+FUObjectArray GUObjectArray;                                   // To keep track of all UObjects
 ```
 
 ```c++
@@ -521,7 +521,7 @@ FUObjectArray GUObjectArray;                                   // To keep track 
  * Add an object to the root set. This prevents the object and all
  * its descendants from being deleted during garbage collection.
  */
-void UObjectBaseUtility::AddToRoot()                           // AddToRoot is actually FORCEINLINE, most likely for performance benefits. Showing scope resolution operator for ease of understanding                                     
+void UObjectBaseUtility::AddToRoot()                           // FORCEINLINE for performance benefits                                     
 {                                                              // GUObjectArray is the global array of all UObjects   
     GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();  // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
 }                                                              // Set RootSet flag for object
