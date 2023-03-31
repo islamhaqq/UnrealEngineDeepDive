@@ -504,11 +504,8 @@ All gameplay objects in the engine are derived from this class.
 
 ##### Garbage Collection
 
-`UObjects` that are garbage collected when they are no longer referenced. Whenever they are created, they are automatically added
-to an internal reference graph. The garbage collector tracks all referenced `UObjects` by searching the tree of known `UObject`
-references, starting from the root set. The root set refers to the root of the reference graph which references a set of `UObject`s.
-This is also how `UObject`s are garbage collected: when they are unreferenced (e.g. not in the graph), they will be destroyed. Generally,
-this prevents memory leaks despite improper usage.
+When `UObject`s are created, they are automatically added to a global array `GUObjectArray`. The GC tracks `UObject`s this way, and garbage collects any that are unreferenced, unless they have
+flags to explicitly prevent garbage collection. One of these flags is the `EInternalObjectFlags::RootSet`.
 
 ```c++
 // Runtime/CoreUObject/Public/UObject/UObjectBaseUtility.h
@@ -517,7 +514,7 @@ this prevents memory leaks despite improper usage.
  * Add an object to the root set. This prevents the object and all
  * its descendants from being deleted during garbage collection.
  */
-void UObjectBaseUtility::AddToRoot()                           // AddToRoot is actually FORCEINLINE. Showing scope resolution operator for ease of understanding                                     
+void UObjectBaseUtility::AddToRoot()                           // AddToRoot is actually FORCEINLINE, most likely for performance benefits. Showing scope resolution operator for ease of understanding                                     
 {                                                              // GUObjectArray is the global array of all UObjects   
     GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();  // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
 }                                                              // Set RootSet flag for object
@@ -533,9 +530,9 @@ FUObjectArray GUObjectArray;                                   // To keep track 
 ```c++
 // Runtime/CoreUObject/Public/UObject/UObjectArray.h
 
-void FUObjectItem::SetRootSet()            
+void FUObjectItem::SetRootSet()                                 // FUObjectItem represents the UObject in the global array, it is a struct that contains a pointer to a UObject
 {
-    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet); // Adding to RootSet is setting a flag
+    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet); // Sets a flag which lets the garbage collector know not to garbage collect EVEN if unreferenced
 }
 ```
 
