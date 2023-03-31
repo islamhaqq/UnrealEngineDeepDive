@@ -504,8 +504,15 @@ All gameplay objects in the engine are derived from this class.
 
 ##### Garbage Collection
 
-When `UObject`s are created, they are automatically added to a global array `GUObjectArray`. The GC tracks `UObject`s this way, and garbage collects any that are unreferenced, unless they have
+When `UObject`s are created, they are automatically added to a global array `GUObjectArray` which the GC uses for tracking any unreferenced objects to mark for deletion, unless they have
 flags to explicitly prevent garbage collection. One of these flags is the `EInternalObjectFlags::RootSet`.
+
+```c++
+// Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
+
+// Global UObject array instance
+FUObjectArray GUObjectArray;                                   // To keep track all UObjects
+```
 
 ```c++
 // Runtime/CoreUObject/Public/UObject/UObjectBaseUtility.h
@@ -518,13 +525,6 @@ void UObjectBaseUtility::AddToRoot()                           // AddToRoot is a
 {                                                              // GUObjectArray is the global array of all UObjects   
     GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();  // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
 }                                                              // Set RootSet flag for object
-```
-
-```c++
-// Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
-
-// Global UObject array instance
-FUObjectArray GUObjectArray;                                   // To keep track of every UObject created
 ```
 
 ```c++
