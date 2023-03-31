@@ -3,7 +3,7 @@
 There are not many resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation.
 This should help fill in the gaps for those who are interested in learning more about the engine.
 
-**Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the bottom of the document.
+**Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the [bottom of the runtime engine architecture section](#game-layer-game-code).
 Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
 ## Two Parts
@@ -360,22 +360,6 @@ Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
 ### Physics/Collision World
 
 
-## World Builder Layer (Tool Suite) - Unreal Editor
-
-### Skeletons and Animation
-
-#### Skeleton Editor
-
-#### Skeletal Mesh Editor
-
-#### Animation Editor
-
-#### Animation Blueprint Editor
-
-#### Physics editor
-
-
-
 ## Human Interface Devices (HID) Layer
 
 ### Game-Specific Interface
@@ -713,3 +697,18 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 ### Weapons
 
 ### Abilities
+
+
+# Editor Architecture - Unreal Editor
+
+### Skeletons and Animation
+
+#### Skeleton Editor
+
+#### Skeletal Mesh Editor
+
+#### Animation Editor
+
+#### Animation Blueprint Editor
+
+#### Physics editor
