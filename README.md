@@ -517,17 +517,17 @@ this prevents memory leaks despite improper usage.
  * Add an object to the root set. This prevents the object and all
  * its descendants from being deleted during garbage collection.
  */
-void UObjectBaseUtility::AddToRoot()                                        // AddToRoot is actually FORCEINLINE. Showing scope resolution operator for ease of understanding                                     
-{                                                                           // GUObjectArray is the global array of all UObjects   
-    GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();               // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
-}                                                                           // Set RootSet flag for object
+void UObjectBaseUtility::AddToRoot()                           // AddToRoot is actually FORCEINLINE. Showing scope resolution operator for ease of understanding                                     
+{                                                              // GUObjectArray is the global array of all UObjects   
+    GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();  // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
+}                                                              // Set RootSet flag for object
 ```
 
 ```c++
 // Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
 
 // Global UObject array instance
-FUObjectArray GUObjectArray;                                                 // To keep track of every UObject created
+FUObjectArray GUObjectArray;                                   // To keep track of every UObject created
 ```
 
 ```c++
@@ -535,7 +535,7 @@ FUObjectArray GUObjectArray;                                                 // 
 
 void FUObjectItem::SetRootSet()            
 {
-    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet);                // Adding to RootSet is setting a flag
+    ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet); // Adding to RootSet is setting a flag
 }
 ```
 
