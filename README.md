@@ -39,6 +39,11 @@ To keep the project modular, many features within these layers (e.g. Replication
 This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
 The Quake 2 engine, for example, had significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php) due to their popularity at the time.
 
+Some reasons why this layer exists:
+* Implement memory access and tracking for each platform.
+* Obtain properties for platforms regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
+* Access (and wrap functions for) platform native APIs (e.g. Atomics, File I/O, Time)
+
 ### Entry Point
 
 The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`.
@@ -75,6 +80,12 @@ while( !IsEngineExitRequested() )
 ### Apple
 
 Apple-hardware specific code is under `Runtime/Core/Apple`.
+
+#### Table of Files
+
+| File | Description |
+| --- | --- |
+| ApplePlatformMemory.cpp | Memory allocation and tracking |
 
 ```c++
 // Core/Private/Apple/ApplePlatformMemory.cpp
