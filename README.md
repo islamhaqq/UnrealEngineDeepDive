@@ -96,7 +96,7 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 
 // Skip ~250 lines including functions for memory allocation
 
-FMalloc* FApplePlatformMemory::BaseAllocator()
+FMalloc* FApplePlatformMemory::BaseAllocator()                       // 
 {
 #if ENABLE_LOW_LEVEL_MEM_TRACKER
 	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats(); // FPlatformMemoryStats is the Apple implementation of FPlatformMemoryStats which contains memory numbers on available/used physical/virtual memory
@@ -514,7 +514,50 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 
 #### UObject
 
-All objects in the engine are derived from this class.
+All gameplay objects in the engine are derived from this class.
+
+##### Garbage Collection
+
+`UObjects` that are garbage collected when they are no longer referenced. Whenever they are created, they are automatically added
+to an internal reference graph. The garbage collector tracks all referenced `UObjects` by searching the tree of known `UObject`
+references, starting from the root set. The root set refers to the root of the reference graph which references a set of `UObject`s.
+This is also how `UObject`s are garbage collected: when they are unreferenced (e.g. not in the graph), they will be destroyed. Generally,
+this prevents memory leaks despite improper usage.
+
+There are 3 ways to keep them referenced in the internal reference graph:
+
+_1. With a strong reference (`UPROPERTY()`) to them from objects that are also referenced_
+
+In other words, if a `UObject` does not have a `UPROPERTY` reference, there is a good chance it will be garbage collected away.
+`UActor`s and `UActorComponent`s are an e exception this rule, since the Actor is referenced by the `UWorld` (which is in the root set),
+and the Actor Component is referenced by the Actor itself.
+
+Another practical implication of this is that once the owning `UActor` is destroyed, usually all of its `UActorComponent`s will be destroyed because
+the Actor was the only `UObject` with a strong reference to them.
+
+_2. By calling `UObject::AddReferencedObjects` from objects that are also referenced_
+_3. By adding them to the root set with `UObject::AddToRoot`_
+
+
+
+##### Automatic Property Initialization
+
+`UObject`s properties are automatically initialized to zero before the constructor is called.
+
+##### Factory Methods
+
+* `NewObject()` is the simplest `UObject` factory method
+* `NewNamedObject()` is the same as `NewObject()` but with an `FName`
+* `ConstructObject()` is a more flexible factory method
+
+##### Automatic Updating of References
+
+`UObject`s marked with `UPROPERTY()` or stored in Unreal container classes are visible to the reflection system, and thus are automatically
+nulled when the object is destroyed. This is because null-checking is more reliable than non-null pointers pointing at deleted memory.
+
+##### Serialization
+
+
 
 #### UActor
 
