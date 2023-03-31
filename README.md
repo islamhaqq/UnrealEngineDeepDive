@@ -504,7 +504,7 @@ All gameplay objects in the engine are derived from this class.
 
 ##### Garbage Collection
 
-When `UObject`s are created, they are automatically added to a global array `GUObjectArray` which the GC uses for tracking any unreferenced objects to mark for deletion, unless they have
+When `UObject`s are created, they are automatically added to a global array `GUObjectArray` which the GC uses for tracking any unreferenced objects for deletion, unless they have
 flags to explicitly prevent garbage collection. One of these flags is the `EInternalObjectFlags::RootSet`.
 
 ```c++
