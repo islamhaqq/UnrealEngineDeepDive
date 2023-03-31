@@ -83,9 +83,25 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 
 #### Table of Files
 
-| File | Description |
-| --- | --- |
-| ApplePlatformMemory.cpp | Memory allocation and tracking |
+| File                            | Description                         |
+|---------------------------------|-------------------------------------|
+| AppleLLM.h                      | Low-Level Memory Tracker            |
+| ApplePlatformAffinity.h         | -                                   |
+| ApplePlatformAtomics.h          | Wrap Apple atomic implementations   |
+| ApplePlatformCompilerPreSetup.h | -                                   |
+| ApplePlatformCrashContext.h     | Crash context                       |
+| ApplePlatformDebugEvents.h      | -                                   |
+| ApplePlatformFile.h             | Wrap Apple File I/O implementations |
+| ApplePlatformMemory.h           | Memory allocation and tracking      |
+| ApplePlatformMisc.h             | -                                   |
+| ApplePlatformRunnableThread.h   | -                                   |
+| ApplePlatformStackWalk.h   | -                                   |
+| ApplePlatformString.h   | -                                   |
+| ApplePlatformTime.h   | Wrap Apple Time implementations     |
+| ApplePlatformTLS.h   | -                                   |
+| CFRef.h   | -                                   |
+| PostAppleSystemHeaders.h   | Preserve macros                     |
+| PreAppleSystemHeaders.h   | Preserve macros                     |
 
 ```c++
 // Core/Private/Apple/ApplePlatformMemory.cpp
