@@ -41,7 +41,7 @@ The Quake 2 engine, for example, had significant [optimizations made for the Int
 
 Some reasons why this layer exists:
 * Implement memory access and tracking for each platform.
-* Obtain properties for platforms regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
+* Obtain platform properties regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
 * Access (and wrap functions for) platform native APIs (e.g. Atomics, File I/O, Time)
 
 ### Entry Point
@@ -103,6 +103,8 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 | PostAppleSystemHeaders.h   | Preserve macros                     |
 | PreAppleSystemHeaders.h   | Preserve macros                     |
 
+
+
 ```c++
 // Core/Private/Apple/ApplePlatformMemory.cpp
 
@@ -144,8 +146,20 @@ FMalloc* FApplePlatformMemory::BaseAllocator()                       //
 
 ## Drivers Layer
 
+Drivers manage hardware resources and provide an interface (abstraction) for the operating system to interact with the myriad variants of hardware devices.
 
 ## Operating System Layer
+
+Operating systems share hardware resources between multiple applications, one being your game. Unlike consoles of old where a game could "own" the entire device and assume full control of memory
+and compute resources, modern consoles can have multiple applications running alongside your game (e.g. Xbox Live, Netflix, Voice Chat, store downloads) that take over certain system resources or
+pause the game entirely (Xbox Dashboard).
+
+`FGenericPlatformMisc` and `FGenericPlatform` are examples of OS layer classes.
+
+Some reasons why this layer exists:
+
+* Execute general platform commands (e.g. get orientation of screen, get network type)
+* Provide platform-specific implementations of OS functions (e.g. `FPlatformProcess::Sleep`, `FPlatformProcess::LaunchURL`)
 
 ### Windows
 
@@ -158,9 +172,22 @@ FMalloc* FApplePlatformMemory::BaseAllocator()                       //
 
 ## 3rd Party SDKs Layer
 
+Unreal Engine leverages a number of third-party software development kits (SDKs) including:
+
+* Nvidia SDKs (CUDA, GeForce NOW, GPU Direct)
+* Python
+* Steamworks
+* Oculus
+* WebRTC
+* SpeedTree
+
 ### Graphics
 
 #### DirectX
+
+SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`, `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
+
+These SDKs are primarily used for DirectX RHI implementations, some others include shader compilation.
 
 #### Vulkan
 
