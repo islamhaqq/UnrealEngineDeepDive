@@ -169,28 +169,36 @@ FMalloc* FApplePlatformMemory::BaseAllocator()
 
 Unreal Engine leverages a number of third-party software development kits (SDKs) including:
 
-* Nvidia SDKs (CUDA, GeForce NOW, GPU Direct)
-* Python
-* Steamworks
-* Oculus
+* Nvidia SDKs
+  * CUDA (Compute Unified Device Architecture) - API for using GPUs for general purpose computing `ThirdParty/NVIDIA/CUDA`
+  * GeForce NOW - Cloud gaming service `Plugins/Runtime/Nvidia/GeForceNOWWrapper`
+  * GPUDirect - Direct data exchange with Nvidia GPUs `ThirdPartyNVIDIA/GPUDirect`
+* Python - For enabling developers to create editor widgets `ThirdParty/Python3`
+* Steamworks - For enabling Steam online services
+* Oculus - Oculus VR support
 * WebRTC
-* SpeedTree
+* SpeedTree - For generating and rendering trees
 
 ### Graphics
 
 #### DirectX
 
-SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`, `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
+Microsoft's 3D graphics API. SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`, `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
 
 These SDKs are primarily used for DirectX RHI implementations, some others include shader compilation.
 
 #### Vulkan
 
+Khronos Group's low-level library for submitting rendering batches and GPGPU jobs directly to the GPU as command lists.  Enables
+fine-grained control over resources shared between CPU and GPU.
+
 #### OpenGL
+
+Portable 3D graphics SDK. 
 
 ### Physics & Collision
 
-#### PhysX
+#### Nvidia PhysX
 
 
 ## Platform Independence Layer
@@ -389,11 +397,11 @@ This layer of the engine handles collision detection and rigid body dynamics (wh
 misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
 
 Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics & collision engine. Hence, Unreal Engine 
-uses Nvidia's PhysX SDK, which is a free and open source. It does however have some of custom implementation such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
+uses Nvidia's PhysX SDK, which is a free and open source. It does however have some custom implementations such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
 
 Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to represent dynamic and static rigid bodies.
 
-Relevant folders are `Runtime/PhysicsCore` and `Runtime/Engine/PhysicsEngine`.
+The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, `Runtime/Engine/Public/Physics`, and `Runtime/Engine/PhysicsEngine`.
 
 ### Forces & Constraints
 
