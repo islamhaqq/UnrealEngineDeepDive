@@ -39,11 +39,6 @@ To keep the project modular, many features within these layers (e.g. Replication
 This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
 The Quake 2 engine, for example, had significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php) due to their popularity at the time.
 
-Some reasons why this layer exists:
-* Implement memory access and tracking for each platform.
-* Obtain platform properties regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
-* Access (and wrap functions for) platform native APIs (e.g. Atomics, File I/O, Time)
-
 ### Entry Point
 
 The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`.
@@ -79,59 +74,6 @@ while( !IsEngineExitRequested() )
 
 ### Apple
 
-Apple-hardware specific code is under `Runtime/Core/Apple`.
-
-#### Table of Files
-
-| File                            | Description                         |
-|---------------------------------|-------------------------------------|
-| AppleLLM.h                      | Low-Level Memory Tracker            |
-| ApplePlatformAffinity.h         | -                                   |
-| ApplePlatformAtomics.h          | Wrap Apple atomic implementations   |
-| ApplePlatformCompilerPreSetup.h | -                                   |
-| ApplePlatformCrashContext.h     | Crash context                       |
-| ApplePlatformDebugEvents.h      | -                                   |
-| ApplePlatformFile.h             | Wrap Apple File I/O implementations |
-| ApplePlatformMemory.h           | Memory allocation and tracking      |
-| ApplePlatformMisc.h             | -                                   |
-| ApplePlatformRunnableThread.h   | -                                   |
-| ApplePlatformStackWalk.h   | -                                   |
-| ApplePlatformString.h   | -                                   |
-| ApplePlatformTime.h   | Wrap Apple Time implementations     |
-| ApplePlatformTLS.h   | -                                   |
-| CFRef.h   | -                                   |
-| PostAppleSystemHeaders.h   | Preserve macros                     |
-| PreAppleSystemHeaders.h   | Preserve macros                     |
-
-
-
-```c++
-// Core/Private/Apple/ApplePlatformMemory.cpp
-
-// In this file, we keep track of the amount of memory we've allocated for an Unreal app running on an Apple device.
-
-#include <stdlib.h>                          // c standard library
-#include <objc/runtime.h>                    // for inspecting and manipulating Objective-C runtime data structures
-#if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iOS 13+
-#include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
-#endif                                       // Only need to include one header specific to iOS 13+.
-#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems, provides primitive data types, etc.. Types used: CFIndex is a typedef for a signed integer type (SInt32) used to represent indices into a CFArray or CFString
-                                             // CFOptionFlags is a typedef for an unsigned integer type (UInt32) used to represent bitfields for passing special allocations into CF funcs.
-                                             // CFAllocatorContext is a struct containing callbacks for allocating, deallocating, and reallocating memory, and for retaining and releasing objects.
-
-#include "HAL/LowLevelMemTracker.h"          // for FLowLevelMemTracker in order to track memory allocations
-#include "Apple/AppleLLM.h"                  // Apple's Low-Level Memory Tracker which tracks all allocations from the OS
-
-// Skip ~250 lines including functions for memory allocation
-
-FMalloc* FApplePlatformMemory::BaseAllocator()                        
-{
-#if ENABLE_LOW_LEVEL_MEM_TRACKER
-	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats(); // FPlatformMemoryStats is the Apple implementation of FPlatformMemoryStats which contains memory numbers on available/used physical/virtual memory
-	FLowLevelMemTracker::Get().SetProgramSize(MemStats.UsedPhysical);
-#endif
-```
-
 ### Xbox
 
 ### Playstation
@@ -158,16 +100,69 @@ pause the game entirely (Xbox Dashboard).
 
 Some reasons why this layer exists:
 
+* Implement memory access and tracking for each platform.
+* Obtain platform properties regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
+* Access (and wrap functions for) platform native APIs (e.g. Atomics, File I/O, Time)
 * Execute general platform commands (e.g. get orientation of screen, get network type)
 * Provide platform-specific implementations of OS functions (e.g. `FPlatformProcess::Sleep`, `FPlatformProcess::LaunchURL`)
 
+
 ### Windows
 
-### MacOS
+### MacOS & iOS
+
+Apple-platform specific code is under `Runtime/Core/Apple`.
+
+#### Table of Files
+
+| File                            | Description                         |
+|---------------------------------|-------------------------------------|
+| AppleLLM.h                      | Low-Level Memory Tracker            |
+| ApplePlatformAffinity.h         | -                                   |
+| ApplePlatformAtomics.h          | Wrap Apple atomic implementations   |
+| ApplePlatformCompilerPreSetup.h | -                                   |
+| ApplePlatformCrashContext.h     | Crash context                       |
+| ApplePlatformDebugEvents.h      | -                                   |
+| ApplePlatformFile.h             | Wrap Apple File I/O implementations |
+| ApplePlatformMemory.h           | Memory allocation and tracking      |
+| ApplePlatformMisc.h             | -                                   |
+| ApplePlatformRunnableThread.h   | -                                   |
+| ApplePlatformStackWalk.h   | -                                   |
+| ApplePlatformString.h   | -                                   |
+| ApplePlatformTime.h   | Wrap Apple Time implementations     |
+| ApplePlatformTLS.h   | -                                   |
+| CFRef.h   | -                                   |
+| PostAppleSystemHeaders.h   | Preserve macros                     |
+| PreAppleSystemHeaders.h   | Preserve macros                     |
+
+```c++
+// Core/Private/Apple/ApplePlatformMemory.cpp
+
+// In this file, we keep track of the amount of memory we've allocated for an Unreal app running on an Apple device.
+
+#include <stdlib.h>                          // c standard library
+#include <objc/runtime.h>                    // for inspecting and manipulating Objective-C runtime data structures
+#if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iPhone 13+
+#include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
+#endif                                       // Only need to include one header specific to iOS 13+.
+#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems, provides primitive data types, etc.. Types used: CFIndex is a typedef for a signed integer type (SInt32) used to represent indices into a CFArray or CFString
+                                             // CFOptionFlags is a typedef for an unsigned integer type (UInt32) used to represent bitfields for passing special allocations into CF funcs.
+                                             // CFAllocatorContext is a struct containing callbacks for allocating, deallocating, and reallocating memory, and for retaining and releasing objects.
+
+#include "HAL/LowLevelMemTracker.h"          // for FLowLevelMemTracker in order to track memory allocations
+#include "Apple/AppleLLM.h"                  // Apple's Low-Level Memory Tracker which tracks all allocations from the OS
+
+// Skip ~250 lines including functions for memory allocation
+
+FMalloc* FApplePlatformMemory::BaseAllocator()                        
+{
+#if ENABLE_LOW_LEVEL_MEM_TRACKER
+	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats(); // FPlatformMemoryStats is the Apple implementation of FPlatformMemoryStats which contains memory numbers on available/used physical/virtual memory
+	FLowLevelMemTracker::Get().SetProgramSize(MemStats.UsedPhysical);
+#endif
+```
 
 ### Linux
-
-### IOS
 
 
 ## 3rd Party SDKs Layer
