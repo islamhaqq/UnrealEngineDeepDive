@@ -124,7 +124,7 @@ Apple-hardware specific code is under `Runtime/Core/Apple`.
 
 // Skip ~250 lines including functions for memory allocation
 
-FMalloc* FApplePlatformMemory::BaseAllocator()                       // 
+FMalloc* FApplePlatformMemory::BaseAllocator()                        
 {
 #if ENABLE_LOW_LEVEL_MEM_TRACKER
 	FPlatformMemoryStats MemStats = FApplePlatformMemory::GetStats(); // FPlatformMemoryStats is the Apple implementation of FPlatformMemoryStats which contains memory numbers on available/used physical/virtual memory
