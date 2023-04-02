@@ -1,29 +1,40 @@
 ## Preface
 
-There are not many resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the source code or reading the little information provided in the official documentation.
+There are not many resources for a deep dive into Epic Game's Unreal Engine architecture beyond stepping through the
+source code or reading the little information provided in the official documentation.
 This should help fill in the gaps for those who are interested in learning more about the engine.
 
-**Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you want game-related information, you should start at the [bottom of the runtime engine architecture section](#game-layer-game-code).
+**Important for new readers:** This documentation goes from lower-layer to upper-layer parts of the engine. So if you
+want game-related information, you should start at
+the [bottom of the runtime engine architecture section](#game-layer-game-code).
 Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
 ## Two Parts
 
-Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
+Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of
+tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
-Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its competitor Quake Engine) and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine.
-There are a lot of benefits for this, most importantly that the game can run via PIE (Play in Editor) in-editor without performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors
-such as reducing code duplication between the two. There are also drawbacks in developer productivity due to locking of files preventing simultaneous editing of assets. More on this later.
+Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its
+competitor Quake Engine) and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine.
+There are a lot of benefits for this, most importantly that the game can run via PIE (Play in Editor) in-editor without
+performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors
+such as reducing code duplication between the two. There are also drawbacks in developer productivity due to locking of
+files preventing simultaneous editing of assets. More on this later.
 
 # Runtime Engine Architecture
 
-Unreal Engine, like all software systems and game engines, is built in layers. In order to avoid circular dependencies which negatively impact testability, platform independence, and re-usability/modularity, the lower layers do not depend on upper layers.
+Unreal Engine, like all software systems and game engines, is built in layers. In order to avoid circular dependencies
+which negatively impact testability, platform independence, and re-usability/modularity, the lower layers do not depend
+on upper layers.
 
 The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
 `GameModeBase`. The lower layers contain hardware-specific implementation such as `Runtime/Unix`.
 
 From top to bottom, the layers are:
+
 * Game-Specific Subsystems
-* Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal Animation Collision & Physics, Animation, AI, HID Audio, Input
+* Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal
+  Animation Collision & Physics, Animation, AI, HID Audio, Input
 * Resources (Resource Manager)
 * Core Systems
 * Platform Independence Layer (Networking, File System)
@@ -32,21 +43,28 @@ From top to bottom, the layers are:
 * Drivers
 * Hardware
 
-To keep the project modular, many features within these layers (e.g. Replication Graph, Gameplay Ability System) are separated out into optional Plugins.
+To keep the project modular, many features within these layers (e.g. Replication Graph, Gameplay Ability System) are
+separated out into optional Plugins.
 
 ## Target Hardware Layer
 
-This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific code and optimizations for different computer or console systems.
-The Quake 2 engine, for example, had significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php) due to their popularity at the time.
+This layer is platform-specific. Generally, Unreal Engine is platform-agnostic, but there are some platform-specific
+code and optimizations for different computer or console systems.
+The Quake 2 engine, for example, had
+significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php)
+due to their popularity at the time.
 
 ### Entry Point
 
-The entry point for the engine depends on the platform. Every Windows program has an entry-point function called `WinMain`.
-Unreal Engine's entry point for Windows, like all other game engines, is the `WinMain` function defined in `Windows/LaunchWindows.cpp`.
+The entry point for the engine depends on the platform. Every Windows program has an entry-point function
+called `WinMain`.
+Unreal Engine's entry point for Windows, like all other game engines, is the `WinMain` function defined
+in `Windows/LaunchWindows.cpp`.
 The [Quake 2 engine](https://github.com/id-Software/Quake-2/blob/master/win32/sys_win.c#L594), for example, also has the
 identically named function.
 
 Each supported platform has their respective entry point:
+
 * MacOS: `INT32_MAIN_INT32_ARGC_TCHAR_ARGV` in `Mac/LaunchMac.cpp`
 * Linux: `int main` in `Linux/LaunchLinux.cpp`
 * IOS: `int main` in `IOS/LaunchIOS.cpp`
@@ -88,12 +106,15 @@ while( !IsEngineExitRequested() )
 
 ## Drivers Layer
 
-Drivers manage hardware resources and provide an interface (abstraction) for the operating system to interact with the myriad variants of hardware devices.
+Drivers manage hardware resources and provide an interface (abstraction) for the operating system to interact with the
+myriad variants of hardware devices.
 
 ## Operating System Layer
 
-Operating systems share hardware resources between multiple applications, one being your game. Unlike consoles of old where a game could "own" the entire device and assume full control of memory
-and compute resources, modern consoles can have multiple applications running alongside your game (e.g. Xbox Live, Netflix, Voice Chat, store downloads) that take over certain system resources or
+Operating systems share hardware resources between multiple applications, one being your game. Unlike consoles of old
+where a game could "own" the entire device and assume full control of memory
+and compute resources, modern consoles can have multiple applications running alongside your game (e.g. Xbox Live,
+Netflix, Voice Chat, store downloads) that take over certain system resources or
 pause the game entirely (Xbox Dashboard).
 
 `FGenericPlatformMisc` and `FGenericPlatform` are examples of OS layer classes.
@@ -101,11 +122,12 @@ pause the game entirely (Xbox Dashboard).
 Some reasons why this layer exists:
 
 * Implement memory access and tracking for each platform.
-* Obtain platform properties regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps, Audio Streaming)
+* Obtain platform properties regarding features that are supported (e.g. Texture Streaming, High Quality Light Maps,
+  Audio Streaming)
 * Access (and wrap functions for) platform native APIs (e.g. Atomics, File I/O, Time)
 * Execute general platform commands (e.g. get orientation of screen, get network type)
-* Provide platform-specific implementations of OS functions (e.g. `FPlatformProcess::Sleep`, `FPlatformProcess::LaunchURL`)
-
+* Provide platform-specific implementations of OS functions (e.g. `FPlatformProcess::Sleep`
+  , `FPlatformProcess::LaunchURL`)
 
 ### Windows
 
@@ -164,15 +186,15 @@ FMalloc* FApplePlatformMemory::BaseAllocator()
 
 ### Linux
 
-
 ## 3rd Party SDKs Layer
 
 Unreal Engine leverages a number of third-party software development kits (SDKs) including:
 
 * Nvidia SDKs
-  * CUDA (Compute Unified Device Architecture) - API for using GPUs for general purpose computing `ThirdParty/NVIDIA/CUDA`
-  * GeForce NOW - Cloud gaming service `Plugins/Runtime/Nvidia/GeForceNOWWrapper`
-  * GPUDirect - Direct data exchange with Nvidia GPUs `ThirdPartyNVIDIA/GPUDirect`
+    * CUDA (Compute Unified Device Architecture) - API for using GPUs for general purpose
+      computing `ThirdParty/NVIDIA/CUDA`
+    * GeForce NOW - Cloud gaming service `Plugins/Runtime/Nvidia/GeForceNOWWrapper`
+    * GPUDirect - Direct data exchange with Nvidia GPUs `ThirdPartyNVIDIA/GPUDirect`
 * Python - For enabling developers to create editor widgets `ThirdParty/Python3`
 * Steamworks - For enabling Steam online services
 * Oculus - Oculus VR support
@@ -183,52 +205,105 @@ Unreal Engine leverages a number of third-party software development kits (SDKs)
 
 #### DirectX
 
-Microsoft's 3D graphics API. SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`, `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
+Microsoft's 3D graphics API. SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`
+, `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
 
 These SDKs are primarily used for DirectX RHI implementations, some others include shader compilation.
 
 #### Vulkan
 
-Khronos Group's low-level library for submitting rendering batches and GPGPU jobs directly to the GPU as command lists.  Enables
+Khronos Group's low-level library for submitting rendering batches and GPGPU jobs directly to the GPU as command lists.
+Enables
 fine-grained control over resources shared between CPU and GPU.
 
 #### OpenGL
 
-Portable 3D graphics SDK. 
+Portable 3D graphics SDK.
 
 ### Physics & Collision
 
 #### Nvidia PhysX
 
-
 ## Platform Independence Layer
 
-Unreal Engine's Platform Independence Layer is called the **Hardware Abstraction layer (HAL).** Everything under `Runtime/Core/Public/HAL` falls under this layer.
+Unreal Engine's Platform Independence Layer is called the **Hardware Abstraction layer (HAL).** Everything
+under `Runtime/Core/Public/HAL` falls under this layer.
 
 ### Platform Detection
 
-`Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86 processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
+`Platform.h` defines multiple header guards for different platforms, such as `PLATFORM_CPU_X86_FAMILY` for x86
+processors, `PLATFORM_CPU_ARM_FAMILY` for ARM processors, and `PLATFORM_APPLE` for Apple devices.
 The `FPlatformAtomics` class contains platform-specific implementations of atomic operations.
 
 ### Primitive Data Types
-### Collections & Iterators
-### File System
-### Networking
-### Hi-Res Timer
-### Threading Library
-### Graphics Wrappers
-### Physics & Collision Wrappers
 
+### Collections & Iterators
+
+### File System
+
+### Networking
+
+### Hi-Res Timer
+
+### Threading Library
+
+A thread is a component of a process. A process is a unit of resources, while a thread is a unit of scheduling and
+execution.
+
+The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
+
+* Create threads using the constructor
+
+```c++
+	FThread(                                                  // The main class for creating threads is FThread
+		TCHAR const* ThreadName,                              // The name of the thread
+		TUniqueFunction<void()>&& ThreadFunction,             // 
+		uint32 StackSize = 0,
+		EThreadPriority ThreadPriority = TPri_Normal,
+		FThreadAffinity ThreadAffinity = FThreadAffinity(),
+		EForkable IsForkable = NonForkable
+	);
+```
+
+#### Stack Size
+
+The stack data structure is a container of contiguous blocks of memory (analogous to a stack of plates), where only the
+top of the stack is accessible and needs to be removed (popped) before the block below it
+can be accessed. In other words, the first block pushed onto the stack is the last block to be popped off, and the last
+block pushed onto the stack is the first block to be popped off (LIFO).
+
+Stack Diagram:
+
+This behavior of a stack is convenient for representing function calls because the nature of functions is that a
+function may call (push onto the stack) other (nested) functions that it depends on, and as a result, a
+particular function cannot complete execution until all its nested functions are completed (popped) first.
+
+This is called the _Program Stack_. And each item on the stack (a block of memory) is called a _stack frame_. Whenever a
+function is called (by another function), the operating system needs to store all local variables declared in the
+function, the contents of CPU registers for the function to utilize, and a way (return address) for the calling (outer)
+function (that is one stack frame below) to continue execution once the called function is returned by storing the
+return address. All of this memory stored in the stack frame.
+
+Before a program is loaded onto memory and executed, the operating system needs to first reserve an area of memory for
+the _program stack_
+
+### Graphics Wrappers
+
+### Physics & Collision Wrappers
 
 ## Core Systems Layer
 
 ### Data Structures & Algorithms
 
-All software systems require containers that allow for the storage and manipulation of data and algorithms that use these data structures to solve problems. Many projects use standard and
+All software systems require containers that allow for the storage and manipulation of data and algorithms that use
+these data structures to solve problems. Many projects use standard and
 third-party libraries that provide implementations of these data structure and algorithms.
 
-However, Unreal Engine neither uses STL, the C++ Standard Template Library, nor third-parties like Boost, Folly, or Loki. It opts for a custom solution for performance benefits. Although it isn't used anywhere in the Engine, many of the custom implementations are inspired by Boost, a popular and powerful data
-structures and algorithms C++ library that shares similar style to its predecessor STL. Many of the third party libraries included by UE, however, do use Boost.
+However, Unreal Engine neither uses STL, the C++ Standard Template Library, nor third-parties like Boost, Folly, or
+Loki. It opts for a custom solution for performance benefits. Although it isn't used anywhere in the Engine, many of the
+custom implementations are inspired by Boost, a popular and powerful data
+structures and algorithms C++ library that shares similar style to its predecessor STL. Many of the third party
+libraries included by UE, however, do use Boost.
 
 Note: For an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`).
 
@@ -277,6 +352,7 @@ sum = SumAll(MyTArray); // The TArray is treated as a view
 CArray<int32, 5> MyCArray = {1, 2, 3, 4, 5}; // CArray is fine too
 sum = SumAll(MyCArray);
 ```
+
 </td>
 <td>-</td>
 <td>boost::container::vector</td>
@@ -366,12 +442,12 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 
 ### Asynchronous File I/O
 
-
 ## Resources (Game Assets) Layer
 
 ### Resource Manager (UnrealEd)
 
-Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This includes `umap` and
+Unreal Engine's highly centralized resource manager is a unified interface to access all types of game assets. This
+includes `umap` and
 `uasset` files.
 
 ### 3D Model Resource
@@ -390,18 +466,22 @@ Unreal Engine's highly centralized resource manager is a unified interface to ac
 
 ### Game World/Map
 
-
 ## Collision & Physics Layer
 
-This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from). Calling it physics is a bit of a
-misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything else.
+This layer of the engine handles collision detection and rigid body dynamics (which is where it gets "physics" from).
+Calling it physics is a bit of a
+misnomer, as the engine is primarily concerned about forces and torques acting on rigid bodies, and not much of anything
+else.
 
-Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics & collision engine. Hence, Unreal Engine 
-uses Nvidia's PhysX SDK, which is a free and open source. It does however have some custom implementations such as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
+Typically, game engines do not implement their own physics engine. Instead, they use SDKs from a third-party physics &
+collision engine. Hence, Unreal Engine
+uses Nvidia's PhysX SDK, which is a free and open source. It does however have some custom implementations such
+as `ARigidBodyBase`. It does not use Havok or Open Dynamics Engine.
 
 Unreal Engine uses the `PxRigidActor` class from PhysX's `physx` namespace to represent dynamic and static rigid bodies.
 
-The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, `Runtime/Engine/Public/Physics`, and `Runtime/Engine/PhysicsEngine`.
+The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, `Runtime/Engine/Public/Physics`,
+and `Runtime/Engine/PhysicsEngine`.
 
 ### Forces & Constraints
 
@@ -415,13 +495,11 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### Physics/Collision World
 
-
 ## Human Interface Devices (HID) Layer
 
 ### Game-Specific Interface
 
 ### Physical Device I/O
-
 
 ## Profiling & Debugging Layer
 
@@ -431,8 +509,56 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### In-Game Menus or Console
 
-
 ## Low-Level Renderer Layer
+
+### Graphics Device Interface
+
+Unreal Engine calls this the RHI (Render Hardware Interface). Utilizes graphics SDKs (DirectX, OpenGL, Vulkan) to
+enumerate
+available graphics devices, initialize them, and set up render surfaces (back buffer, stencil buffer, depth buffer,
+etc.).
+
+Found in `Runtime/RHI` and `Runtime/RHICore`.
+
+#### Table of Files
+
+| File | Description |
+|------|-------------|
+| BoundShaderStateCache.h | |
+| DynamicRHI.h | |
+| GPUDefragAllocator.h | |
+| GPUProfiler.h | |
+| GpuProfilerTrace.h | |
+| MultiGPU.h | |
+| PipelineFileCache.h | |
+| PipelineStateCache.h | |
+| PsoLruCache.h | |
+| RHI.h | |
+| RHIBreadcrumbs.h | |
+| RHICommandList.h | |
+| RHICommandList.inl | |
+| RHICommandListCommandExecutes.inl | |
+| RHIContext.h | |
+| RHIDefinitions.h | |
+| RHIGPUReadback.h | |
+| RHIResources.h | |
+| RHIShaderFormatDefinitions.inl | |
+| RHIStaticStates.h | |
+| RHISurfaceDataConversion.h | |
+| RHITransientResourceAllocator.h | |
+| RHIUtilities.h | |
+| RHIValidation.h | |
+| RHIValidationCommon.h | |
+| RHIValidationContext.h | |
+| RHIValidationTransientResourceAllocator.h | |
+| RHIValidationUtils.h | |
+| TextureProfiler.h | |
+
+#### DirectX RHI
+
+#### Vulkan RHI
+
+#### OpenGL RHI
 
 ### Materials & Shaders
 
@@ -450,7 +576,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### Debug Drawing (Lines etc.)
 
-
 ## Scene Graph / Culling Optimizations Layer
 
 ### Spatial Hash (BSP, Tree, kd-Tree, ...)
@@ -458,7 +583,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 ### Occlusion & PVS
 
 ### LOD System
-
 
 ## Visual Effects Layer
 
@@ -474,7 +598,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### Environment Mapping
 
-
 ## Front End Layer
 
 ### Heads-Up Display (HUD)
@@ -488,7 +611,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 ### In-Game Menus
 
 ### Wrappers / Attract Mode
-
 
 ## Skeletal Animation layer
 
@@ -512,7 +634,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### Ragdoll Physics (+Collision & Physics Layer)
 
-
 ## Audio Layer
 
 ### DSP/Effects
@@ -521,7 +642,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 
 ### Audio Playback / Management
 
-
 ## Online Multiplayer Layer
 
 ### Matchmaking & Game Management
@@ -529,7 +649,6 @@ The Physics Engine implementation is in `Runtime/Engine/Private/PhysicsEngine`, 
 ### Object Authority Policy
 
 ### Game State Replication
-
 
 ## Gameplay Foundations Layer
 
@@ -555,13 +674,15 @@ The all the graphs for a Blueprint, such as the Event Graph, are combined into a
 #### UObject
 
 All gameplay objects in the engine are derived from this class.
-	
+
 ![uobjectdiagram](https://user-images.githubusercontent.com/11065634/229152810-f9c3423a-10be-4d60-93a1-1f1dda037fd3.jpg)
 
 ##### Garbage Collection
 
-When `UObject`s are created, they are automatically added to a global array `GUObjectArray` which the GC uses for tracking and deleting at regular intervals any unreferenced objects or
-objects explicitly marked for destruction, unless they have flags to explicitly prevent garbage collection. One of these flags is the `EInternalObjectFlags::RootSet`.
+When `UObject`s are created, they are automatically added to a global array `GUObjectArray` which the GC uses for
+tracking and deleting at regular intervals any unreferenced objects or
+objects explicitly marked for destruction, unless they have flags to explicitly prevent garbage collection. One of these
+flags is the `EInternalObjectFlags::RootSet`.
 
 ```c++
 // Runtime/CoreUObject/Private/UObject/UObjectHash.cpp
@@ -574,12 +695,15 @@ There are 3 ways to keep them referenced in the internal reference graph:
 
 1. With a strong reference (`UPROPERTY()`) to them from objects that are also referenced
 
-    In other words, if a `UObject` does not have a `UPROPERTY` reference, there is a good chance it will be garbage collected away.
-    `UActor`s and `UActorComponent`s are an e exception this rule, since the Actor is referenced by the `UWorld` (which is in the root set),
-    and the Actor Component is referenced by the Actor itself.
-    
-    Another practical implication of this is that once the owning `UActor` is destroyed, usually all of its `UActorComponent`s will be destroyed because
-    the Actor was the only `UObject` with a strong reference to them.
+   In other words, if a `UObject` does not have a `UPROPERTY` reference, there is a good chance it will be garbage
+   collected away.
+   `UActor`s and `UActorComponent`s are an e exception this rule, since the Actor is referenced by the `UWorld` (which
+   is in the root set),
+   and the Actor Component is referenced by the Actor itself.
+
+   Another practical implication of this is that once the owning `UActor` is destroyed, usually all of
+   its `UActorComponent`s will be destroyed because
+   the Actor was the only `UObject` with a strong reference to them.
 
 2. By calling `UObject::AddReferencedObjects` from objects that are also referenced
 
@@ -597,7 +721,7 @@ There are 3 ways to keep them referenced in the internal reference graph:
         GUObjectArray.IndexToObject(InternalIndex)->SetRootSet();  // Use the int32 InternalIndex belonging to UObjectBase to index into GUObjectArray
     }                                                              // Set RootSet flag for object
     ```
-    
+
     ```c++
     // Runtime/CoreUObject/Public/UObject/UObjectArray.h
     
@@ -606,7 +730,6 @@ There are 3 ways to keep them referenced in the internal reference graph:
         ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet); // Sets a flag which lets the garbage collector know not to garbage collect EVEN if unreferenced
     }
     ```
-
 
 ##### Automatic Property Initialization
 
@@ -620,24 +743,30 @@ There are 3 ways to keep them referenced in the internal reference graph:
 
 ##### Automatic Updating of References
 
-`UObject`s marked with `UPROPERTY()` or stored in Unreal container classes are visible to the reflection system, and thus are automatically
-nulled when the object is destroyed. This is because null-checking is more reliable than non-null pointers pointing at deleted memory.
+`UObject`s marked with `UPROPERTY()` or stored in Unreal container classes are visible to the reflection system, and
+thus are automatically
+nulled when the object is destroyed. This is because null-checking is more reliable than non-null pointers pointing at
+deleted memory.
 
 ##### Serialization
 
-
-
 #### UActor
 
-The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class for all objects that can be placed in the world. Specifically, it is a
+The word "Actor" is not a term unique to Unreal Engine, and can be found even in Nvidia's PhysX. It is the base class
+for all objects that can be placed in the world. Specifically, it is a
 `UObject` with a transform.
 
 #### Composition OOP Design Pattern - Components
 
-Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a relationships instead
-of is-a relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) elaborates on this design pattern, I highly recommend
-reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay functionality within components rather than the larger gameplay classes prevents tarballing files into
-a mess of tightly coupled code that takes longer to compile and harder to maintain due to everything depending on each other.
+Composition is a common object-oriented programming design pattern that defines reusable behavior and expresses has-a
+relationships instead
+of is-a
+relationships. [Design Patterns: Elements of reusable Object-Oriented Software (1994) by Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)
+elaborates on this design pattern, I highly recommend
+reading this book as Unreal Engine uses other patterns from this book. You will find that containing gameplay
+functionality within components rather than the larger gameplay classes prevents tarballing files into
+a mess of tightly coupled code that takes longer to compile and harder to maintain due to everything depending on each
+other.
 
 The base class for components is the `UActorComponent`.
 
@@ -715,7 +844,6 @@ The base class for components is the `UActorComponent`.
 
 ### World Loading / Streaming
 
-
 ## Game-Specific Subsystems Layer
 
 ### Game Specific Rendering
@@ -730,15 +858,18 @@ The base class for components is the `UActorComponent`.
 
 ##### Gameplay Ability System
 
-The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling, casting, granting, and blocking of abilities. Without GAS, you would
-have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls to implement abilities. The GAS pattern comes from World of Warcraft, an
+The Gameplay Ability System (GAS) is a framework to streamline the complex logic that goes into replication, canceling,
+casting, granting, and blocking of abilities. Without GAS, you would
+have to use an increasingly unmaintainable spangle of conditional flag checking, timers, state machines, and RPC calls
+to implement abilities. The GAS pattern comes from World of Warcraft, an
 obvious heavy user of abilities at scale.
 
 ###### Gameplay Effects
 
 ###### Gameplay Tags
 
-Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple system that allows you to tag objects with arbitrary hierarchical strings.
+Although Gameplay Tags is not exclusive to GAS, it handles the "conditional flag checking" of abilities. It is a simple
+system that allows you to tag objects with arbitrary hierarchical strings.
 An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
 #### Camera-Relative Controls (HID) (+Game Cameras)
@@ -769,7 +900,8 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 
 ## Game Layer (Game Code)
 
-**Note:** This is not part of the engine, but rather built on top of it. Including because it can be helpful and a good wrap up of the engine in practical usage
+**Note:** This is not part of the engine, but rather built on top of it. Including because it can be helpful and a good
+wrap up of the engine in practical usage
 
 ### RTS & TBS
 
@@ -780,7 +912,6 @@ An object can have both the Damage.Fire and Damage.Fire.Fireball tags.
 ### Weapons
 
 ### Abilities
-
 
 # Editor Architecture - Unreal Editor
 
