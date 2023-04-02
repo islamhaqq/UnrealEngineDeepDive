@@ -265,7 +265,7 @@ The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
 	);
 ```
 
-#### Stack Size
+#### A Thread's Stack Size
 
 The stack data structure is a container of contiguous blocks of memory (analogous to a stack of plates), where only the
 top of the stack is accessible and needs to be removed (popped) before the block below it
@@ -281,14 +281,13 @@ function may call (push onto the stack) other (nested) functions that it depends
 particular function cannot complete execution until all its nested functions are completed (popped) first.
 
 This is called the _Program Stack_. And each item on the stack (a block of memory) is called a _stack frame_. Whenever a
-function is called (by another function), the operating system needs to store all local variables declared in the
-function and the contents of CPU registers for the function to utilize. This is stored in the stack frame. When a
-function is returned, the stack frame for
-that particular function is popped off, but the caller needs to continue execution from where it left off. Thus, the
+function is called (by another function), the operating system stores all local variables declared in the
+function and the contents of CPU registers for the function to utilize in this stack frame. This stack frame is popped
+when the called function is returned, but the caller needs to continue execution from where it left off. Thus, the
 return address for the called function is also stored in the stack frame.
 
 Before a program is loaded onto memory and executed, the operating system needs to first reserve an area of memory for
-the _program stack_
+the _program stack_. The _stack pointer_, the value of a single CPU register, is used to push and pop stack frames.
 
 ### Graphics Wrappers
 
