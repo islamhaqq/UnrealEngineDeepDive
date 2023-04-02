@@ -274,6 +274,8 @@ block pushed onto the stack is the first block to be popped off (LIFO).
 
 Stack Diagram:
 
+![image](https://user-images.githubusercontent.com/11065634/229366965-473ed9d6-610f-4c17-9963-1c2a08d5327a.png)
+
 This behavior of a stack is convenient for representing function calls because the nature of functions is that a
 function may call (push onto the stack) other (nested) functions that it depends on, and as a result, a
 particular function cannot complete execution until all its nested functions are completed (popped) first.
