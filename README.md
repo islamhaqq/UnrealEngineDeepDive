@@ -70,6 +70,8 @@ Each supported platform has their respective entry point:
 * IOS: `int main` in `IOS/LaunchIOS.cpp`
 
 ```c++
+// Launch/Private/Windows/LaunchWindows.cpp
+
 // Windows specific parameters: HINSTANCE is identification to prevent class name clashing
 int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ char* pCmdLine, _In_ int32 nCmdShow)
 {
@@ -84,6 +86,8 @@ int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstanc
 It is a very simple while loop.
 
 ```c++
+// Runtime/Launch/Private/Launch.cpp
+
 while( !IsEngineExitRequested() )
 {
     EngineTick();
@@ -265,17 +269,41 @@ the CPU. You can consider the execution of the functions in your game as a threa
 
 The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
 
+##### Usage
+
 * Create threads using the constructor
 
 ```c++
-	FThread(                                                  // The main class for creating threads is FThread
-		TCHAR const* ThreadName,                              // The name of the thread
-		TUniqueFunction<void()>&& ThreadFunction,             // 
-		uint32 StackSize = 0,
-		EThreadPriority ThreadPriority = TPri_Normal,
-		FThreadAffinity ThreadAffinity = FThreadAffinity(),
-		EForkable IsForkable = NonForkable
-	);
+// Runtime/Core/Public/HAL/Thread.h
+
+/**
+* Creates and immediately starts a new system thread that will execute `ThreadFunction` argument.
+* Can return before the thread is actually started or when it already finished execution.
+* @param ThreadName Name of the thread
+* @param ThreadFunction The function that will be executed by the newly created thread
+* @param StackSize The size of the stack to create. 0 means use the current thread's stack size
+* @param ThreadPriority Tells the thread whether it needs to adjust its priority or not. Defaults to normal priority
+* @param ThreadAffinity Tells the thread whether it needs to adjust its affinity or not. Defaults to no affinity
+* @param IsForkable Tells the thread whether it can be forked. Defaults to NonForkable
+*/
+FThread(
+    TCHAR const* ThreadName,
+    TUniqueFunction<void()>&& ThreadFunction,
+    uint32 StackSize = 0,
+    EThreadPriority ThreadPriority = TPri_Normal,
+    FThreadAffinity ThreadAffinity = FThreadAffinity(),
+    EForkable IsForkable = NonForkable
+);
+```
+
+```c++
+FThread Thread = FThread(TEXT("MyThreadWithSingleton),   // Give any name
+    []()                                                 // Since a thread is a sequence of instructions, we pass a function for the new thread to execute
+    {                                                    // One-time use anonymous lambda function
+        FThreadSingletonFirst::Get();
+        FThreadSingletonSecond::Get();
+    });
+Thread.Join();
 ```
 
 ##### Program Stack
