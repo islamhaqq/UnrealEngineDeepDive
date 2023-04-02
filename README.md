@@ -272,7 +272,7 @@ top of the stack is accessible and needs to be removed (popped) before the block
 can be accessed. In other words, the first block pushed onto the stack is the last block to be popped off, and the last
 block pushed onto the stack is the first block to be popped off (LIFO).
 
-Stack Diagram:
+Stack Diagram (_javabycode.com - Stack Data Structure in Java, easy in 5 minutes_):
 
 ![image](https://user-images.githubusercontent.com/11065634/229366965-473ed9d6-610f-4c17-9963-1c2a08d5327a.png)
 
@@ -282,9 +282,10 @@ particular function cannot complete execution until all its nested functions are
 
 This is called the _Program Stack_. And each item on the stack (a block of memory) is called a _stack frame_. Whenever a
 function is called (by another function), the operating system needs to store all local variables declared in the
-function, the contents of CPU registers for the function to utilize, and a way (return address) for the calling (outer)
-function (that is one stack frame below) to continue execution once the called function is returned by storing the
-return address. All of this memory stored in the stack frame.
+function and the contents of CPU registers for the function to utilize. This is stored in the stack frame. When a
+function is returned, the stack frame for
+that particular function is popped off, but the caller needs to continue execution from where it left off. Thus, the
+return address for the called function is also stored in the stack frame.
 
 Before a program is loaded onto memory and executed, the operating system needs to first reserve an area of memory for
 the _program stack_
