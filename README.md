@@ -119,8 +119,6 @@ Netflix, Voice Chat, store downloads) that take over certain system resources or
 pause the game entirely (Xbox Dashboard). At that time, a layer like this was nonexistent or at most limited to a
 library that directly access hardware resources.
 
-`FGenericPlatformMisc` and `FGenericPlatform` are examples of OS layer classes.
-
 Some reasons why this layer exists:
 
 * Implement memory access and tracking for each platform.
@@ -131,11 +129,14 @@ Some reasons why this layer exists:
 * Provide platform-specific implementations of OS functions (e.g. `FPlatformProcess::Sleep`
   , `FPlatformProcess::LaunchURL`)
 
+`FGenericPlatformMisc` and `FGenericPlatform` are examples of OS layer classes.
+
 ### Windows
 
 ### MacOS & iOS
 
-Apple-platform specific code is under `Runtime/Core/Apple`.
+Unreal Engine interfaces with Apple platforms in `Runtime/Core/Apple` with the help of Apple's Core Foundation (CF) SDK. Core
+Foundation is an API for C used for its operating systems, providing primitive data types and wrapper functions (file I/O, network I/O).
 
 #### Table of Files
 
@@ -155,7 +156,7 @@ Apple-platform specific code is under `Runtime/Core/Apple`.
 | ApplePlatformString.h   | -                                   |
 | ApplePlatformTime.h   | Wrap Apple Time implementations     |
 | ApplePlatformTLS.h   | -                                   |
-| CFRef.h   | -                                   |
+| CFRef.h   | -                                  |
 | PostAppleSystemHeaders.h   | Preserve macros                     |
 | PreAppleSystemHeaders.h   | Preserve macros                     |
 
@@ -169,7 +170,7 @@ Apple-platform specific code is under `Runtime/Core/Apple`.
 #if PLATFORM_IOS && defined(__IPHONE_13_0)   // Include only for iPhone 13+
 #include <os/proc.h>                         // in order to call os_proc_available_memory which determines the amount of memory available to the current app (your game running on the iPhone)
 #endif                                       // Only need to include one header specific to iOS 13+.
-#include <CoreFoundation/CFBase.h>           // Core Foundation is an API for C used for its operating systems, provides primitive data types, etc.. Types used: CFIndex is a typedef for a signed integer type (SInt32) used to represent indices into a CFArray or CFString
+#include <CoreFoundation/CFBase.h>           // Types used from Core Foundation: CFIndex is a typedef for a signed integer type (SInt32) used to represent indices into a CFArray or CFString
                                              // CFOptionFlags is a typedef for an unsigned integer type (UInt32) used to represent bitfields for passing special allocations into CF funcs.
                                              // CFAllocatorContext is a struct containing callbacks for allocating, deallocating, and reallocating memory, and for retaining and releasing objects.
 
@@ -249,6 +250,8 @@ The `FPlatformAtomics` class contains platform-specific implementations of atomi
 
 ### Threading Library
 
+#### Thread
+
 A thread is a component of a process. A process is a unit of resources, while a thread is a unit of scheduling and
 execution.
 
@@ -267,7 +270,7 @@ The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
 	);
 ```
 
-#### Stack Size
+##### Stack Size
 
 The `StackSize` parameter for the constructor refers to the thread's _Program Stack_.
 
