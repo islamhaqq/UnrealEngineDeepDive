@@ -135,8 +135,10 @@ Some reasons why this layer exists:
 
 ### MacOS & iOS
 
-Unreal Engine interfaces with Apple platforms in `Runtime/Core/Apple` with the help of Apple's Core Foundation (CF) SDK. Core
-Foundation is an API for C used for its operating systems, providing primitive data types and wrapper functions (file I/O, network I/O).
+Unreal Engine interfaces with Apple platforms in `Runtime/Core/Apple` with the help of Apple's Core Foundation (CF) SDK.
+Core
+Foundation is an API for C used for its operating systems, providing primitive data types and wrapper functions (file
+I/O, network I/O).
 
 #### Table of Files
 
@@ -250,10 +252,16 @@ The `FPlatformAtomics` class contains platform-specific implementations of atomi
 
 ### Threading Library
 
+Unreal Engine improves performance of its applications by taking advantage of the multi-core architecture of modern CPUs
+with the use of a threading library.
+
 #### Thread
 
-A thread is a component of a process. A process is a unit of resources, while a thread is a unit of scheduling and
-execution.
+A thread is a theoretical concept representing a component of a process. A process is a unit of resources, while a
+thread is a unit of scheduling and execution. You can analogize it to a cotton thread, a long thin strand of cotton
+fibers used for sewing, except the
+cotton fibers are sequential instructions. This thread includes the scheduling and execution of these instructions by
+the CPU. You can consider the execution of the functions in your game as a thread.
 
 The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
 
@@ -270,14 +278,15 @@ The API for system threads is located in `Runtime/Core/Public/HAL/Thread.h`.
 	);
 ```
 
-##### Stack Size
+##### Program Stack
 
-The `StackSize` parameter for the constructor refers to the thread's _Program Stack_.
+The `FThread`'s `StackSize` parameter for the constructor refers to the size of a key component of a thread, the
+thread's _Program Stack_.
 
 The stack data structure is a container of contiguous blocks of memory (analogous to a stack of plates), where only the
 top of the stack is accessible and needs to be removed (popped) before the block below it
 can be accessed. In other words, the first block pushed onto the stack is the last block to be popped off, and the last
-block pushed onto the stack is the first block to be popped off (LIFO).
+block pushed onto the stack is the first block to be popped off (LIFO - Last In First Out).
 
 Stack Diagram (_javabycode.com - Stack Data Structure in Java, easy in 5 minutes_):
 
@@ -287,12 +296,12 @@ This behavior of a stack is convenient for representing function calls because t
 function may call (push onto the stack) other (nested) functions that it depends on, and as a result, a
 particular function cannot complete execution until all its nested functions are completed (popped) first.
 
-This is stack for function calls is called the _Program Stack_, and each item on the stack (a block of memory) is called
-a _stack frame_. Whenever a
-function is called (by another function), the operating system stores all local variables declared in the
-function and the contents of CPU registers for the function to utilize in this stack frame. This stack frame is popped
-when the called function is returned, but the caller needs to continue execution from where it left off. Thus, the
-return address for the called function is also stored in the stack frame.
+This stack for function calls is called the _Program Stack_, and each item on the stack (a block of memory) is called
+a _stack frame_. Whenever a function is called (by another function), the operating system stores all local variables
+declared in the
+function and the contents of CPU registers for the function to utilize in this stack frame. The
+return address for the called function is also stored in the stack frame because once the stack frame is popped
+after the called function is returned, the caller needs to continue execution from where it left off.
 
 Before a program is loaded onto memory and executed, the operating system needs to first reserve an area of memory for
 the _program stack_. The _stack pointer_, the value of a single CPU register, is used to push and pop stack frames.
