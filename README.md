@@ -207,8 +207,15 @@ Unreal Engine leverages a number of third-party software development kits (SDKs)
 * Python - For enabling developers to create editor widgets `ThirdParty/Python3`
 * Steamworks - For enabling Steam online services
 * Oculus - Oculus VR support
-* WebRTC
+* WebRTC - Standing for Web Real-Time Communication, it is a technology that uses web sockets to enable real-time communication
+  between web browsers and mobile applications, without the need for a plugin or external app. This enables seamless streaming of
+  video, audio, and data which enables video conferences, augmented reality, and online gaming. In the case for Unreal Engine,
+  it is used extensively for Pixel Streaming. Using a client-server model instead of peer-to-peer, Pixel Streaming video encodes rendered Unreal Engine content and audio running on a server
+  and streams it to connected web browsers or mobile applications for decoding without powerful hardware client-side. `ThirdParty/WebRTC`
 * SpeedTree - For generating and rendering trees
+
+Their respective source code and pre-built `.lib` files are located in their corresponding folders. However, they are not viewable
+in your solution explorer until you generate the project files adding the `-THIRDPARTY` flag to the `GenerateProjectFiles.bat`
 
 ### Graphics
 
@@ -251,6 +258,14 @@ The `FPlatformAtomics` class contains platform-specific implementations of atomi
 ### File System
 
 ### Networking
+
+#### Pixel Streaming
+
+Pixel Streaming uses WebRTC to stream rendered Unreal Engine content over the internet to connected remote clients in-real time via a server-client model. A server on the cloud (e.g. AWS Tesla T4 gpu instance) can run a headless Unreal Engine,
+and use Nvidia's NVENC to encode the rendered frames and audio into H.264. Then stream it to clients that will then decode the frames and audio to display them to the client's screen without the need for a plugin, external app,
+or powerful hardware client-side.
+
+
 
 ### Hi-Res Timer
 
@@ -297,11 +312,11 @@ FThread(
 ```
 
 ```c++
-FThread Thread = FThread(TEXT("MyThreadWithSingleton),   // Give any name
+FThread Thread = FThread(
+    TEXT("MyThreadWithSingleton),                        // Give any name
     []()                                                 // Since a thread is a sequence of instructions, we pass a function for the new thread to execute
     {                                                    // One-time use anonymous lambda function
-        FThreadSingletonFirst::Get();
-        FThreadSingletonSecond::Get();
+        DoWork();
     });
 Thread.Join();
 ```
