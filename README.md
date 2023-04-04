@@ -207,15 +207,22 @@ Unreal Engine leverages a number of third-party software development kits (SDKs)
 * Python - For enabling developers to create editor widgets `ThirdParty/Python3`
 * Steamworks - For enabling Steam online services
 * Oculus - Oculus VR support
-* WebRTC - Standing for Web Real-Time Communication, it is a technology that uses web sockets to enable real-time communication
-  between web browsers and mobile applications, without the need for a plugin or external app. This enables seamless streaming of
-  video, audio, and data which enables video conferences, augmented reality, and online gaming. In the case for Unreal Engine,
-  it is used extensively for Pixel Streaming. Using a client-server model instead of peer-to-peer, Pixel Streaming video encodes rendered Unreal Engine content and audio running on a server
-  and streams it to connected web browsers or mobile applications for decoding without powerful hardware client-side. `ThirdParty/WebRTC`
+* WebRTC - Standing for Web Real-Time Communication, it is a technology that uses web sockets to enable real-time
+  communication
+  between web browsers and mobile applications, without the need for a plugin or external app. This enables seamless
+  streaming of
+  video, audio, and data which enables video conferences, augmented reality, and online gaming. In the case for Unreal
+  Engine,
+  it is used extensively for Pixel Streaming. Using a client-server model instead of peer-to-peer, Pixel Streaming video
+  encodes rendered Unreal Engine content and audio running on a server
+  and streams it to connected web browsers or mobile applications for decoding without powerful hardware
+  client-side. `ThirdParty/WebRTC`
 * SpeedTree - For generating and rendering trees
 
-Their respective source code and pre-built `.lib` files are located in their corresponding folders. However, they are not viewable
-in your solution explorer until you generate the project files adding the `-THIRDPARTY` flag to the `GenerateProjectFiles.bat`
+Their respective source code and pre-built `.lib` (`.a` for Linux) files are located in their corresponding folders. However, they are
+not viewable in your solution explorer until you generate the project files adding the `-THIRDPARTY` flag to
+the `GenerateProjectFiles.bat` The `.lib` files are intermediate libraries of object files (intermediate sdk source code
+files) produced as part of the compilation process that are later used to link to the final executable.
 
 ### Graphics
 
@@ -261,11 +268,12 @@ The `FPlatformAtomics` class contains platform-specific implementations of atomi
 
 #### Pixel Streaming
 
-Pixel Streaming uses WebRTC to stream rendered Unreal Engine content over the internet to connected remote clients in-real time via a server-client model. A server on the cloud (e.g. AWS Tesla T4 gpu instance) can run a headless Unreal Engine,
-and use Nvidia's NVENC to encode the rendered frames and audio into H.264. Then stream it to clients that will then decode the frames and audio to display them to the client's screen without the need for a plugin, external app,
+Pixel Streaming uses WebRTC to stream rendered Unreal Engine content over the internet to connected remote clients
+in-real time via a server-client model. A server on the cloud (e.g. AWS Tesla T4 gpu instance) can run a headless Unreal
+Engine,
+and use Nvidia's NVENC to encode the rendered frames and audio into H.264. Then stream it to clients that will then
+decode the frames and audio to display them to the client's screen without the need for a plugin, external app,
 or powerful hardware client-side.
-
-
 
 ### Hi-Res Timer
 
