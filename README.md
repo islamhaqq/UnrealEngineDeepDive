@@ -81,6 +81,7 @@ int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstanc
 }
 ```
 
+
 ### Main Engine Loop
 
 It is a very simple while loop.
@@ -226,18 +227,20 @@ files) produced as part of the compilation process that are later used to link t
 
 ### Graphics
 
+As Unreal Engine tries to be platform-agnostic, it lets graphics APIs like DirectX and OpenGL handle the abstraction of low-level
+GPU hardware communication.
+
 #### DirectX
 
 Microsoft's 3D graphics API. SDKs for DirectX 9, 11, and 12 are found under `ThirdParty/Windows/DX9`
 , `ThirdParty/Windows/DX11`, and `ThirdParty/Windows/DX12`.
 
-These SDKs are primarily used for DirectX RHI implementations, some others include shader compilation.
+These SDKs are primarily used for DirectX RHI implementations, some others include shader compilation. Compared to OpenGL,
+it provides a higher level of abstraction and leverages Microsoft hardware optimizations.
 
 #### Vulkan
 
-Khronos Group's low-level library for submitting rendering batches and GPGPU jobs directly to the GPU as command lists.
-Enables
-fine-grained control over resources shared between CPU and GPU.
+Khronos Group's Vulkan provides a lower-level API compared to DirectX and OpenGL, enabling more efficient use of the GPU. In addition, it allows sending GPGPU (General Purpose GPU) commands to the GPU.
 
 #### OpenGL
 
@@ -274,6 +277,7 @@ Engine,
 and use Nvidia's NVENC to encode the rendered frames and audio into H.264. Then stream it to clients that will then
 decode the frames and audio to display them to the client's screen without the need for a plugin, external app,
 or powerful hardware client-side.
+
 
 ### Hi-Res Timer
 
