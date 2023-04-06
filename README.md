@@ -54,6 +54,15 @@ The Quake 2 engine, for example, had
 significant [optimizations made for the Intel's Pentium processor and its pre-fetching cache](https://fabiensanglard.net/quake2/quake2_software_renderer.php)
 due to their popularity at the time.
 
+### The Window
+
+The engine starts with a window. The operating system provides the fundamental functionality, such as the APIs (e.g. Windows API) and the graphical subsystem
+for creating and managing a windows. The graphical subsystem refers to a stack of software and hardware components responsible for rendering the graphics on
+your screen. The window manager handles the drawing, positioning, resizing, and user interactions with the window. The Graphics Device Interface (GDI) is what creates
+the graphical content by communicating with the graphics drivers by sending commands. The graphics drivers translate the commands from the GDI into instructions
+the graphics hardware can understand. And finally, the the graphics hardware is the physical component that renders the graphics on the screen by creating a
+frame buffer, applying algorithms to each pixel on the frame buffer, and display the final image.
+
 ### Entry Point
 
 The entry point for the engine depends on the platform. Every Windows program has an entry-point function
@@ -80,7 +89,6 @@ int32 WINAPI WinMain(_In_ HINSTANCE hInInstance, _In_opt_ HINSTANCE hPrevInstanc
 	return Result; // 0 on success, error level otherwise
 }
 ```
-
 
 ### Main Engine Loop
 
