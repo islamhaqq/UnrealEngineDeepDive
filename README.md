@@ -948,6 +948,11 @@ have to use an increasingly unmaintainable spangle of conditional flag checking,
 to implement abilities. The GAS pattern comes from World of Warcraft, an
 obvious heavy user of abilities at scale.
 
+###### Gameplay Abilities
+
+Blueprint-able functionality that can be given or removed, triggered manually or by input. Can be paired with an animation montage. Replication is built into the
+system.
+
 ###### Gameplay Effects
 
 ###### Gameplay Tags
