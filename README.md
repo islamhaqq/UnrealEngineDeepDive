@@ -660,6 +660,8 @@ Found in `Runtime/RHI` and `Runtime/RHICore`.
 
 ## Scene Graph / Culling Optimizations Layer
 
+Uses a Scene Outliner, a hierarchical scene representation using a tree structure, to perform optimizations such as frustum culling.
+
 ### Spatial Hash (BSP, Tree, kd-Tree, ...)
 
 ### Occlusion & PVS
