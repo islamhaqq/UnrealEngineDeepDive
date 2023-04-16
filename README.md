@@ -78,8 +78,8 @@ myriad variants of hardware devices.
 This part of Unreal Engine handles the various operating systems which share hardware resources between multiple
 applications, one being your game. Unlike consoles of old
 where a game could "own" the entire device and assume full control of memory
-and compute resources, modern consoles can have multiple applications running alongside your game (e.g. Xbox Live,
-Netflix, Voice Chat, store downloads) that take over certain system resources or
+and compute resources, modern consoles and modern operating systems employe preemptive multitasking and can have multiple applications
+running alongside your game (e.g. Xbox Live, Netflix, Voice Chat, store downloads) that take over certain system resources or
 pause the game entirely (Xbox Dashboard). At that time, a layer like this was nonexistent or at most limited to a
 library that directly access hardware resources.
 
@@ -382,10 +382,10 @@ these data structures to solve problems. Many projects use standard and
 third-party libraries that provide implementations of these data structure and algorithms.
 
 However, Unreal Engine neither uses STL, the C++ Standard Template Library, nor third-parties like Boost, Folly, or
-Loki. It opts for a custom solution for performance benefits. Although it isn't used anywhere in the Engine, many of the
+Loki. It opts for a custom solution for performance benefits and cross-platform support. Although it isn't used anywhere in the Engine, many of the
 custom implementations are inspired by Boost, a popular and powerful data
-structures and algorithms C++ library that shares similar style to its predecessor STL. Many of the third party
-libraries included by UE, however, do use Boost.
+structures and algorithms C++ library that shares similar style to its predecessor STL. Some of the third party
+libraries included by UE, such as SDKs made by Pixar, however do use Boost.
 
 Note: For an unknown reason there is an import for Boost (`Source/ThirdParty/Boost`).
 
