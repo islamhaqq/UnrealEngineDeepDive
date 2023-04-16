@@ -146,6 +146,14 @@ while( !IsEngineExitRequested() )
 }
 ```
 
+#### Table of Files
+
+
+| File                    | Description                                                                                                                                                                                          |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| WindowsPlatform.h       | Abstracts away Windows platform-specific details (compiler, sdk versions, etc.) and provides a consistent interface for the rest of the code base. Specifically defines types, settings, and macros. |
+
+
 ### MacOS & iOS
 
 Unreal Engine interfaces with Apple platforms in `Runtime/Core/Apple` with the help of Apple's Core Foundation (CF) SDK.
