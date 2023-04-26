@@ -668,7 +668,9 @@ Found in `Runtime/RHI` and `Runtime/RHICore`.
 
 ## Scene Graph / Culling Optimizations Layer
 
-Uses a Scene Outliner, a hierarchical scene representation using a tree structure, to perform optimizations such as frustum culling.
+Generally, any sort of Spatial Subdivision is called a "Scene Graph". Common algorithms for spatial subdivision includes Octrees, Quadtrees, Binary Space Partitioning trees, k-d trees, and sphere hierarchical. Unreal Engine uses a Scene Outliner, a hierarchical scene representation using a tree structure, to perform optimizations such as frustum culling.
+
+Culling can involve a simple algorithm such as frustum (the trapezoidal prism that represents your view into the world) culling or can leverage spatial partitioning algorithms to reduce geometry in which to do culling upon.
 
 ### Spatial Hash (BSP, Tree, kd-Tree, ...)
 
