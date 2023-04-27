@@ -285,6 +285,13 @@ The `FPlatformAtomics` class contains platform-specific implementations of atomi
 
 ### Networking
 
+The original Unreal game and Unreal Engine shipped with multiplayer networking built on top of the User Datagram Protocol (UDP) as the transport layer. This is due to UDP's lower latency and better fine-grain control over networking compared to TCP. UDP packets contain less headers and does not require an established connection when sending packets. Furthermore, UDP does not guarantee packet delivery, nor ordering of packets. While this reduces reliability of UDP, this also reduces the overhead in sending packets. Whereas for TCP, dropped packets are retransmitted, and packets contain additional headers to maintain ordering. But this creates additional overhead in TCP which is unacceptable for low-tolerance games like FPS games. One of the biggest issues with using TCP for FPS games for example, is that TCP will retransmit low-priority packets even if it means delaying high-priority packets. For example, a packet for shooting a sniper rifle might be delayed because of a dropped VOIP packet whih TCP retransmits and waits for successful acknowledgement. This is especially important for multiplayer FPS videogames where there is little tolerance for lag.
+
+Unreal Engine implements its own custom networking protocol called Unreal Datagram Protocol (UDPG) built on top of User Datagram Protocol (UDP) that provides reliability to the unreliable data you get with UDP due to dropped and out-of-order packets.
+
+Relevant files:
+* UdpMessaging/Private/Transport/UdpMessageProcessor.h
+
 #### Pixel Streaming
 
 Pixel Streaming uses WebRTC to stream rendered Unreal Engine content over the internet to connected remote clients
