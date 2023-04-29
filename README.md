@@ -301,23 +301,27 @@ Whereas for TCP, dropped packets are retransmitted and packets contain additiona
 
 Unreal Engine implements its own custom networking protocol called Unreal Datagram Protocol (UDPG) built on top of User Datagram Protocol (UDP) that provides reliability to the unreliable data you get with UDP due to dropped and out-of-order packets.
 
+The Tribes model is very similar to UE networking model, reading this paper should give you a good idea. https://archive.org/details/tribes-networking-model.
+
 Relevant files:
 * UdpMessaging/Private/Transport/UdpMessageProcessor.h
 
 #### Client Side Prediction
 
-It is good to provide context and some history here. The original Quake 1 released with the "Dumb Terminal" networking model where essentially all the simulation was taken care of server-side. There was no client-side prediction, dead reckoning, nor any other kind of lag compensations made to improve the player experience. Although this reduced vectors for cheating, this creates a poor player experience. This meant that when a player moves his avatar, the following sequence of events occur:
+It is good to provide context and some history here. The original Quake 1 released with the client-server network topology and "Dumb Terminal" networking model where essentially all the simulation was taken care of server-side. There was no client-side prediction, dead reckoning, nor any other kind of lag compensations made to improve the player experience. Although this reduced vectors for cheating, this creates a poor player experience. This meant that when a player moves his avatar, the following sequence of events occur:
 
 1. His local game sends a packet to the server containing the move input
 2. The packet takes 50ms (hypothetical) to get to the server
 3. The server receives the client packet and updates the avatar's position
 4. The server sends a packet to the client with the updated avatar position
 5. The packet takes 50ms (hypothetical, both ends usually are not identical) to get to the client
-6. The client receives the packet with the latest avatar position and updates client
+6. The client receives the packet with the latest avatar position and updates the avatar state with the new location
 
 By then, it has been a 100ms round-time trip (RTT) before the client can even update its position in the game. To make matters worse, the client is now 50ms (1/2 RTT) behind the server. This creates a noticeable delay for the player, who might be running at 60fps (16.7ms per frame). By the time the player sees his avatar move, he would have rendered 6 frames already!
 
-For a Quake 1 multiplayer update called Quake World (1996), [John Carmack made significant improvements to the player experience](https://fabiensanglard.net/quakeSource/johnc-log.aug.htm) that would change multiplayer gaming forever and influence the networking model of games to this day. He introduced client-side prediction:
+For a Quake 1 multiplayer update called Quake World (1996), [John Carmack made significant improvements to the player experience](https://fabiensanglard.net/quakeSource/johnc-log.aug.htm) that would change multiplayer gaming forever and influence the networking model of games to this day (including Unreal Engine). He introduced client-side prediction:
+
+Instead of waiting for the full RTT (e.g. 100ms) to update the local avatar, the client will run a local simulation of the movement action. Then, the client makes appropriate adjustments when receiving the authoritative packet from the server by interpolating between the two positions. Since the client side code for movement is usually identical to that of the server-side, most of the time, this client side prediction is pretty accurate and does not stray too far off from the server.
 
 Come Unreal in May 1998, employed very similar architecture to Quake.
 
