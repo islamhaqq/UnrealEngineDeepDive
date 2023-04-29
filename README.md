@@ -9,13 +9,23 @@ want game-related information, you should start at
 the [bottom of the runtime engine architecture section](#game-layer-game-code).
 Otherwise, start from the top, as understanding the lower layers will help you understand the upper layers.
 
+## History
+
+It is important to start off with the context and history of Unreal Engine. Tim Sweeney took significant inspiration from Quake 1 (1996) and Quake 2 (1997) before he released Unreal (1998). Thus, most of the foundational architecture for Unreal Engine is very similar to Quake. In fact, this quote sums it up
+
+> "This is probably going to come out sounding demeaning, but Epic wants Unreal to be Quake. Everything they did with Unreal, they did because they wanted it to be like what Quake turned out to be." - [John Carmack](http://advsys.net/ken/carmken.htm) 
+
+**Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres, and although Epic Games will market Unreal Engine to support all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
+
+Thus, a good resource for understanding the Unreal Engine architecture, is in fact the Quake source code and architecture.
+
 ## Two Parts
 
 Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of
 tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
 Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its
-competitor Quake Engine) and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine.
+competitor Quake Engine so much so that John Carmack is quoted to have said the Unreal is copying Quake) and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine.
 There are a lot of benefits for this, most importantly that the game can run via PIE (Play in Editor) in-editor without
 performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors
 such as reducing code duplication between the two. There are also drawbacks in developer productivity due to locking of
@@ -293,6 +303,23 @@ Unreal Engine implements its own custom networking protocol called Unreal Datagr
 
 Relevant files:
 * UdpMessaging/Private/Transport/UdpMessageProcessor.h
+
+#### Client Side Prediction
+
+It is good to provide context and some history here. The original Quake 1 released with the "Dumb Terminal" networking model where essentially all the simulation was taken care of server-side. There was no client-side prediction, dead reckoning, nor any other kind of lag compensations made to improve the player experience. Although this reduced vectors for cheating, this creates a poor player experience. This meant that when a player moves his avatar, the following sequence of events occur:
+
+1. His local game sends a packet to the server containing the move input
+2. The packet takes 50ms (hypothetical) to get to the server
+3. The server receives the client packet and updates the avatar's position
+4. The server sends a packet to the client with the updated avatar position
+5. The packet takes 50ms (hypothetical, both ends usually are not identical) to get to the client
+6. The client receives the packet with the latest avatar position and updates client
+
+By then, it has been a 100ms round-time trip (RTT) before the client can even update its position in the game. To make matters worse, the client is now 50ms (1/2 RTT) behind the server. This creates a noticeable delay for the player, who might be running at 60fps (16.7ms per frame). By the time the player sees his avatar move, he would have rendered 6 frames already!
+
+For a Quake 1 multiplayer update called Quake World (1996), [John Carmack made significant improvements to the player experience](https://fabiensanglard.net/quakeSource/johnc-log.aug.htm) that would change multiplayer gaming forever and influence the networking model of games to this day. He introduced client-side prediction:
+
+Come Unreal in May 1998, employed very similar architecture to Quake.
 
 #### Pixel Streaming
 
