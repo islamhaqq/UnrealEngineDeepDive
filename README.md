@@ -43,9 +43,21 @@ From top to bottom, the layers are:
 * Hardware
 
 ```mermaid
-flowchart TD;
+flowchart TD
     A[Game-Specific Subsystems]
-    B[Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal Animation, Collision & Physics, Animation, AI, HID Audio, Input]
+    subgraph B[Gameplay Foundations]
+        B1[Rendering]
+        B2[Profiling & Debugging]
+        B3[Scene Graph / Culling]
+        B4[Visual Effects]
+        B5[Front End]
+        B6[Skeletal Animation]
+        B7[Collision & Physics]
+        B8[Animation]
+        B9[AI]
+        B10[HID Audio]
+        B11[Input]
+    end
     C[Resources: Resource Manager]
     D[Core Systems]
     E[Platform Independence Layer: Networking, File System]
