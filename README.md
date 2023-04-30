@@ -12,21 +12,15 @@ It is important to start off with the context and history of Unreal Engine. Tim 
 
 > "This is probably going to come out sounding demeaning, but Epic wants Unreal to be Quake. Everything they did with Unreal, they did because they wanted it to be like what Quake turned out to be." - [John Carmack, creator of Quake, id Software](http://advsys.net/ken/carmken.htm) 
 
-**Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres, and although Epic Games will market Unreal Engine to support all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
+**Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres, and although Epic Games will market Unreal Engine as supporting all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
 
 Thus, a good resource for understanding the Unreal Engine architecture, is in fact the Quake source code and architecture.
 
 ## Two Parts
 
-Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of
-tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
+Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
-Unlike most other game engines, Unreal Engine (which took significant inspiration from the architecture of its
-competitor Quake Engine so much so that John Carmack is quoted to have said the Unreal is copying Quake) and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine.
-There are a lot of benefits for this, most importantly that the game can run via PIE (Play in Editor) in-editor without
-performance impacts, loading asset contents and seeing them in their full glory, in addition to other factors
-such as reducing code duplication between the two. There are also drawbacks in developer productivity due to locking of
-files preventing simultaneous editing of assets. More on this later.
+Unlike most other game engines, Unreal Engine and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine. There are a lot of benefits for this architectural decision, most importantly that the game can run via PIE (Play in Editor) without performance impacts. This also allows loading asset contents and seeing them in their full glory. Furthermore, this reduces code duplication between the two since the Editor is directly using the runtime code. There drawbacks however, such as in developer productivity due to the locking of files preventing simultaneous editing of assets. More on this later.
 
 # Runtime Engine Architecture
 
