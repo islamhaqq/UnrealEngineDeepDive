@@ -72,6 +72,8 @@ flowchart TD
     subgraph E[Platform Independence Layer]
     	E1[Networking]
 	E2[File System]
+	E3[Graphics Wrappers]
+	E4[Physics & Collision Wrappers]
     end
     subgraph F[3rd Party SDKs]
     	F1[DirectX]
