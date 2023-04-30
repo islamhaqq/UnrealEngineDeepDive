@@ -45,7 +45,11 @@ flowchart TD
     A[Game-Specific Subsystems]
     subgraph B[Gameplay Foundations]
         B1[Rendering]
-        B2[Profiling & Debugging]
+        subgraph B2[Profiling & Debugging]
+		B2A[Recording & Playback]
+		B2B[Memory & Performance Stats]
+		B2C[In-Game Menus or Console]
+	end
         B3[Scene Graph / Culling]
         B4[Visual Effects]
         B5[Front End]
@@ -59,7 +63,12 @@ flowchart TD
     subgraph C[Resources]
     	C1[Resource Manager]
     end
-    D[Core Systems]
+    subgraph D[Core Systems]
+    	D1[Automation]
+	D2[Algorithms library]
+	D3[Serialization]
+	D4[Math library]
+    end
     subgraph E[Platform Independence Layer]
     	E1[Networking]
 	E2[File System]
@@ -67,7 +76,8 @@ flowchart TD
     subgraph F[3rd Party SDKs]
     	F1[DirectX]
 	F2[OpenGL]
-	F3[PhysX]
+	F3[Vulkan]
+	F4[PhysX]
     end
     subgraph G[OS]
     	G1[Windows]
