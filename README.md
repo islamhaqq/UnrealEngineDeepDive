@@ -43,17 +43,16 @@ From top to bottom, the layers are:
 * Hardware
 
 ```mermaid
-graph TB
+flowchart TD;
     A[Game-Specific Subsystems]
     B[Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal Animation, Collision & Physics, Animation, AI, HID Audio, Input]
-    C[Resources (Resource Manager)]
+    C[Resources: Resource Manager]
     D[Core Systems]
-    E[Platform Independence Layer (Networking, File System)]
-    F[3rd Party SDKs (DirectX, OpenGL, PhysX)]
+    E[Platform Independence Layer: Networking, File System]
+    F[3rd Party SDKs: DirectX, OpenGL, PhysX]
     G[OS]
     H[Drivers]
     I[Hardware]
-    
     A --> B
     B --> C
     C --> D
@@ -63,6 +62,8 @@ graph TB
     G --> H
     H --> I
 ```
+    
+
 
 To keep the project modular, many features within these layers (e.g. Replication Graph, Gameplay Ability System) are
 separated out into optional Plugins.
