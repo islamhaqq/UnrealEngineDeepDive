@@ -56,11 +56,29 @@ flowchart TD
         B10[HID Audio]
         B11[Input]
     end
-    C[Resources: Resource Manager]
+    subgraph C[Resources]
+    	C1[Resource Manager]
+    end
     D[Core Systems]
-    E[Platform Independence Layer: Networking, File System]
-    F[3rd Party SDKs: DirectX, OpenGL, PhysX]
-    G[OS]
+    subgraph E[Platform Independence Layer]
+    	E1[Networking]
+	E2[File System]
+    end
+    subgraph F[3rd Party SDKs]
+    	F1[DirectX]
+	F2[OpenGL]
+	F3[PhysX]
+    end
+    subgraph G[OS]
+    	G1[Windows]
+	subgraph G2[Apple]
+		G2A[iOS]
+		G2B[Mac]
+	end
+	G3[Xbox]
+	G4[Playstation]
+	G5[Nintendo]
+    end
     H[Drivers]
     I[Hardware]
     A --> B
