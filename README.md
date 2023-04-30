@@ -10,7 +10,7 @@ Note: [you can view this in website form if you like](https://syedaman.github.io
 
 It is important to start off with the context and history of Unreal Engine. Tim Sweeney took significant inspiration from Quake 1 (1996) and Quake 2 (1997) before he released Unreal (1998). Thus, most of the foundational architecture for Unreal Engine is very similar to Quake. In fact, this quote sums it up
 
-> "This is probably going to come out sounding demeaning, but Epic wants Unreal to be Quake. Everything they did with Unreal, they did because they wanted it to be like what Quake turned out to be." - [John Carmack](http://advsys.net/ken/carmken.htm) 
+> "This is probably going to come out sounding demeaning, but Epic wants Unreal to be Quake. Everything they did with Unreal, they did because they wanted it to be like what Quake turned out to be." - [John Carmack, creator of Quake, id Software](http://advsys.net/ken/carmken.htm) 
 
 **Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres, and although Epic Games will market Unreal Engine to support all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
 
