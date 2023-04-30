@@ -340,7 +340,9 @@ Khronos Group's Vulkan provides a lower-level API compared to DirectX and OpenGL
 
 #### OpenGL
 
-Portable 3D graphics SDK.
+The predecessor to Vulkan, OpenGL is a portable 3D graphics SDK. OpenGL has been maintained by Khronos Group since 2006, but is no longer in active development with its last release in 2017.
+
+Because of this, many of the recent advancements in modern GPUs such as the ray tracing capabilities of Nvidia RTX GPUs are NOT supported by OpenGL, and supported by Vulkan instead.
 
 ### Physics & Collision
 
