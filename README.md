@@ -14,22 +14,20 @@ It is important to start off with the context and history of Unreal Engine. Tim 
 
 **Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres (e.g. Quake rendering favored dark-lit corridor gameplay), and although Epic Games will market Unreal Engine as supporting all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
 
-Thus, a good resource for understanding the Unreal Engine architecture, is in fact the Quake source code and architecture.
+Thus, a good resource for understanding the Unreal Engine architecture, is in fact the [Quake source code and architecture](https://github.com/id-Software/Quake-2).
 
 ## Two Parts
 
 Unreal Engine can be broken into two important components: the Editor and the Runtime Engine. The Editor is the suite of tools used to create and edit content for the game. The Runtime Engine is the part that runs the game.
 
-Unlike most other game engines, Unreal Engine and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine. There are a lot of benefits for this architectural decision, most importantly that the game can run via PIE (Play in Editor) without performance impacts. This also allows loading asset contents and seeing them in their full glory. Furthermore, this reduces code duplication between the two since the Editor is directly using the runtime code. There drawbacks however, such as in developer productivity due to the locking of files preventing simultaneous editing of assets. More on this later.
+Unlike most other game engines, Unreal Engine and Quake Engine has the tool suite (`UnrealEd`) built directly into the runtime engine. There are a lot of benefits for this architectural decision, most importantly that the game can run via PIE (Play in Editor) without performance impacts. This also allows loading asset contents and seeing them in their full glory. Furthermore, this reduces code duplication between the two since the Editor is directly using the runtime code. There are drawbacks however, such as in developer productivity due to the locking of files preventing simultaneous editing of assets. More on this later.
 
 # Runtime Engine Architecture
 
-Unreal Engine, like all software systems and game engines, is built in layers. In order to avoid circular dependencies
-which negatively impact testability, platform independence, and re-usability/modularity, the lower layers do not depend
-on upper layers.
+Unreal Engine, like all software systems and game engines, is built in layers. Generally, the lower layers do not depend on the upper layers. This prevents circular dependencies and provides modularity that allows for cross-platform support. One of the biggest benefits is that this makes the code more testable.
 
 The upper-most layers contain the well-known `GameFramework` classes containing `PlayerController` and
-`GameModeBase`. The lower layers contain hardware-specific implementation such as `Runtime/Unix`.
+`GameModeBase`. The lower layers contain platform-specific implementations such as `Runtime/Unix`.
 
 From top to bottom, the layers are:
 
@@ -43,6 +41,28 @@ From top to bottom, the layers are:
 * OS
 * Drivers
 * Hardware
+
+```mermaid
+graph TB
+    A[Game-Specific Subsystems]
+    B[Gameplay Foundations, Rendering, Profiling & Debugging, Scene Graph / Culling, Visual Effects, Front End, Skeletal Animation, Collision & Physics, Animation, AI, HID Audio, Input]
+    C[Resources (Resource Manager)]
+    D[Core Systems]
+    E[Platform Independence Layer (Networking, File System)]
+    F[3rd Party SDKs (DirectX, OpenGL, PhysX)]
+    G[OS]
+    H[Drivers]
+    I[Hardware]
+    
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+```
 
 To keep the project modular, many features within these layers (e.g. Replication Graph, Gameplay Ability System) are
 separated out into optional Plugins.
