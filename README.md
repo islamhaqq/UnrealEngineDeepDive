@@ -44,16 +44,8 @@ From top to bottom, the layers are:
 flowchart TD
     A[Game-Specific Subsystems]
     B[Gameplay Foundations]
-    subgraph B1[Rendering]
-        subgraph B1A[Low-Level Renderer]
-            B1A1[Graphics Device Interface]
-        end
-    end
-    subgraph B2[Profiling & Debugging]
-        B2A[Recording & Playback]
-        B2B[Memory & Performance Stats]
-        B2C[In-Game Menus or Console]
-    end
+    B1[Rendering]
+    B2[Profiling & Debugging]
     B3[Scene Graph / Culling]
     B4[Visual Effects]
     B5[Front End]
@@ -108,6 +100,7 @@ flowchart TD
     A --> B9
     A --> B10
     A --> B11
+    B --> C
     B1 --> C
     B2 --> C
     B3 --> C
