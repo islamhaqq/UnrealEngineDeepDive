@@ -43,64 +43,89 @@ From top to bottom, the layers are:
 ```mermaid
 flowchart TD
     A[Game-Specific Subsystems]
-    subgraph B[Gameplay Foundations]
-        B1[Rendering]
-        subgraph B2[Profiling & Debugging]
-		B2A[Recording & Playback]
-		B2B[Memory & Performance Stats]
-		B2C[In-Game Menus or Console]
-	end
-        B3[Scene Graph / Culling]
-        B4[Visual Effects]
-        B5[Front End]
-        B6[Skeletal Animation]
-        B7[Collision & Physics]
-        B8[Animation]
-        B9[AI]
-        B10[HID Audio]
-        B11[Input]
+    B[Gameplay Foundations]
+    subgraph B1[Rendering]
+        subgraph B1A[Low-Level Renderer]
+            B1A1[Graphics Device Interface]
+        end
     end
+    subgraph B2[Profiling & Debugging]
+        B2A[Recording & Playback]
+        B2B[Memory & Performance Stats]
+        B2C[In-Game Menus or Console]
+    end
+    B3[Scene Graph / Culling]
+    B4[Visual Effects]
+    B5[Front End]
+    B6[Skeletal Animation]
+    B7[Collision & Physics]
+    B8[Animation]
+    B9[AI]
+    B10[HID Audio]
+    B11[Input]
     subgraph C[Resources]
-    	C1[Resource Manager]
+        C1[Resource Manager]
     end
     subgraph D[Core Systems]
-    	D1[Automation]
-	D2[Algorithms library]
-	D3[Serialization]
-	D4[Math library]
+        D1[Automation]
+        D2[Algorithms library]
+        D3[Serialization]
+        D4[Math library]
     end
     subgraph E[Platform Independence Layer]
-    	E1[Networking]
-	E2[File System]
-	E3[Graphics Wrappers]
-	E4[Physics & Collision Wrappers]
+        E1[Networking]
+        E2[File System]
+        E3[Graphics Wrappers]
+        E4[Physics & Collision Wrappers]
     end
     subgraph F[3rd Party SDKs]
-    	F1[DirectX]
-	F2[OpenGL]
-	F3[Vulkan]
-	F4[PhysX]
+        F1[DirectX]
+        F2[OpenGL]
+        F3[Vulkan]
+        F4[PhysX]
     end
     subgraph G[OS]
-    	G1[Windows]
-	subgraph G2[Apple]
-		G2A[iOS]
-		G2B[Mac]
-	end
-	G3[Xbox]
-	G4[Playstation]
-	G5[Nintendo]
+        G1[Windows]
+        subgraph G2[Apple]
+            G2A[iOS]
+            G2B[Mac]
+        end
+        G3[Xbox]
+        G4[Playstation]
+        G5[Nintendo]
     end
     H[Drivers]
     I[Hardware]
     A --> B
-    B --> C
+    A --> B1
+    A --> B2
+    A --> B3
+    A --> B4
+    A --> B5
+    A --> B6
+    A --> B7
+    A --> B8
+    A --> B9
+    A --> B10
+    A --> B11
+    B1 --> C
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+    B6 --> C
+    B7 --> C
+    B8 --> C
+    B9 --> C
+    B10 --> C
+    B11 --> C
     C --> D
     D --> E
     E --> F
     F --> G
     G --> H
     H --> I
+
 ```
     
 
