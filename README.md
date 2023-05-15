@@ -10,9 +10,9 @@ It is important to start off with the context and history of Unreal Engine. Tim 
 
 > "This is probably going to come out sounding demeaning, but Epic wants Unreal to be Quake. Everything they did with Unreal, they did because they wanted it to be like what Quake turned out to be." - [John Carmack, creator of Quake, id Software](http://advsys.net/ken/carmken.htm) 
 
-**Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres (e.g. Quake rendering favored dark-lit corridor gameplay), and although Epic Games will market Unreal Engine as supporting all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking, these are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
+**Unreal shipped as a first person shooter game.** This is important. All the networking, rendering, and the rest of the architecture was developed with an FPS game in mind. Although it did a much better job than Quake in adding in flexibility for other genres (e.g. Quake rendering favored dark-lit corridor gameplay), and although Epic Games will market Unreal Engine as supporting all genres, it is a fact that Unreal Engine was originally and currently still is optimized for first person shooters and genres similar to it. Take client-side prediction for example, or its decision for UDP networking. These are optimizations that greatly improve the experience of FPS and TPS games, but not nearly as much for RTS or TBS games.
 
-Thus, a good resource for understanding the Unreal Engine architecture, is in fact the [Quake source code and architecture](https://github.com/id-Software/Quake-2).
+Hence, Quake influencing Unreal makes the [Quake source code and architecture](https://github.com/id-Software/Quake-2) a great resource for learning the fundamental foundations of Unreal Engine.
 
 ## Two Parts
 
