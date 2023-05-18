@@ -158,7 +158,7 @@ myriad variants of hardware devices.
 This part of Unreal Engine handles the various operating systems which share hardware resources between multiple
 applications, one being your game. Unlike consoles of old
 where a game could "own" the entire device and assume full control of memory
-and compute resources, modern consoles and modern operating systems employe preemptive multitasking and can have multiple applications
+and compute resources, modern consoles and modern operating systems employ preemptive multitasking and can have multiple applications
 running alongside your game (e.g. Xbox Live, Netflix, Voice Chat, store downloads) that take over certain system resources or
 pause the game entirely (Xbox Dashboard). At that time, a layer like this was nonexistent or at most limited to a
 library that directly access hardware resources.
