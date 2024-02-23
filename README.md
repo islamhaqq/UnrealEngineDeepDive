@@ -606,21 +606,193 @@ Unreal Engine defines most if not all its algorithms in `Runtime/Core/Public/Alg
 
 ### Module Start-Up and Shut-Down
 
+Unreal Engine modules manage distinct functionality areas, loaded on demand to conserve resources. Modules define startup and shutdown logic, crucial for initializing resources and cleaning up to avoid leaks.
+
+```c++
+IMPLEMENT_MODULE(FDefaultModuleImpl, MyModule);
+
+void FMyModule::StartupModule()
+{
+    // Initialization logic here
+    UE_LOG(LogTemp, Log, TEXT("MyModule has started!"));
+}
+
+void FMyModule::ShutdownModule()
+{
+    // Cleanup logic here
+    UE_LOG(LogTemp, Log, TEXT("MyModule has shut down"));
+}
+
+```
+
 ### Assertions
+
+Assertions help identify bugs by stopping execution when a condition is false. Unreal uses `check`, `ensure`, and `verify` macros for debugging. Assertions are removed in shipping builds to avoid performance overhead.
+
+```c++
+void MyFunction(int32 Value)
+{
+    // Ensures Value is not zero to avoid division by zero
+    check(Value != 0);
+    float Result = 100 / Value;
+}
+```
 
 ### Automation
 
+Unreal's automation system runs tests and tasks, ensuring stability and performance. Recently we have heard of AAA game titles releasing unshipped and extremely buggy games like BF 2042 and Cyberpunk 2077. A huge part of the reason
+why bugs were not caught was due to the lack of automated testing. Automation tests prevent "regressions" -- the very frustrating bugs that were fixed in the past but reappear in the future. Automation tests are also crucial for performance testing, ensuring that the game runs smoothly on a variety of hardware.
+
 #### Unit Testing
+
+Unit tests validate code behavior in isolation, ensuring reliability and facilitating maintenance.
+
+```c++
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMyUnitTest, "GameTests.Unit.MyFunctionTest", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FMyUnitTest::RunTest(const FString& Parameters)
+{
+    // Test case: ensure MyFunction returns true
+    TestTrue("MyFunction should return true", MyFunction());
+    return true;
+}
+```
 
 #### Gauntlet
 
+Gauntlet is Unreal's automation framework for testing game scenarios and performance in real-world conditions.
+
+Creating a comprehensive Gauntlet test involves extending the FGauntletTestBase class and implementing its virtual methods to define the test behavior. Below is an extended example showcasing how you could structure a performance test using the Gauntlet framework within Unreal Engine. This example will focus on measuring frame rate and memory usage over a fixed duration, but remember that Gauntlet can be used to automate and test a wide range of scenarios depending on your game's requirements.
+
+First, ensure you have the Gauntlet automation framework set up in your Unreal Engine project. This example assumes you have basic knowledge of creating and running Gauntlet tests.
+
+```c++
+// Example usage of Gauntlet to run a performance test
+#include "GauntletTestController.h"
+#include "Engine/World.h"
+#include "Misc/Paths.h"
+#include "HAL/PlatformFilemanager.h"
+
+class FMyPerformanceTest : public FGauntletTestBase
+{
+    float TestDuration;
+    float TimeElapsed;
+    TArray<float> FrameRates;
+    TArray<float> MemoryUsages;
+
+public:
+
+    FMyPerformanceTest()
+        : TestDuration(60.0f) // Run the test for 60 seconds
+        , TimeElapsed(0.0f)
+    {
+    }
+
+    virtual void OnInit() override
+    {
+        FGauntletTestBase::OnInit();
+        UE_LOG(LogGauntlet, Log, TEXT("Starting My Performance Test"));
+
+        // Initialize your test variables here
+        FrameRates.Empty();
+        MemoryUsages.Empty();
+
+        // You might want to load a specific level or set up your game state in a certain way here
+        FString MapName = TEXT("/Game/Maps/YourMapName");
+        GetWorld()->ServerTravel(MapName);
+    }
+
+    virtual void OnTick(float DeltaTime) override
+    {
+        TimeElapsed += DeltaTime;
+
+        // Record frame rate and memory usage at each tick
+        FrameRates.Add(1.0f / DeltaTime); // FPS = 1 / DeltaTime
+        MemoryUsages.Add(FPlatformMemory::GetStats().UsedPhysical); // Get current used physical memory
+
+        // Check if the test has run for the desired duration
+        if (TimeElapsed >= TestDuration)
+        {
+            EndTest();
+        }
+    }
+
+    virtual void EndTest() override
+    {
+        // Calculate average frame rate and memory usage
+        float AvgFrameRate = 0.0f;
+        float AvgMemoryUsage = 0.0f;
+        for (int i = 0; i < FrameRates.Num(); i++)
+        {
+            AvgFrameRate += FrameRates[i];
+            AvgMemoryUsage += MemoryUsages[i];
+        }
+        AvgFrameRate /= FrameRates.Num();
+        AvgMemoryUsage /= MemoryUsages.Num();
+
+        // Log the results
+        UE_LOG(LogGauntlet, Log, TEXT("Average Frame Rate: %f"), AvgFrameRate);
+        UE_LOG(LogGauntlet, Log, TEXT("Average Memory Usage: %f MB"), AvgMemoryUsage / (1024 * 1024));
+
+        // Save results to a file
+        FString ResultsString = FString::Printf(TEXT("Average Frame Rate: %f\nAverage Memory Usage: %f MB\n"), AvgFrameRate, AvgMemoryUsage / (1024 * 1024));
+        FFileHelper::SaveStringToFile(ResultsString, *(FPaths::ProjectDir() + TEXT("TestResults.txt")));
+
+        // Make sure to call the base class's EndTest to properly terminate the test
+        FGauntletTestBase::EndTest();
+    }
+};
+
+// Register the test so Gauntlet can find it
+IMPLEMENT_GAUNTLET_TEST(FMyPerformanceTest, "Performance.MyPerformanceTest")
+```
+
+This is a great way to look for optimizations in your game.
+
 ### Memory Allocation
 
+Unreal Engine customizes memory allocation to improve performance and track usage, integrating with the platform's memory manager.
+
+```c++
+void* MyAllocate(SizeType Size)
+{
+    void* Result = FMemory::Malloc(Size);
+    // Additional logic, such as tracking allocations
+    return Result;
+}
+
+void MyFree(void* Pointer)
+{
+    // Clean up before freeing memory
+    FMemory::Free(Pointer);
+}
+```
+
 ### Math Library
+
+Unreal's math library, part of the Core subsystem, provides vectors, matrices, and more for game calculations.
+
+```c++
+FVector A(1, 0, 0);
+FVector B(0, 1, 0);
+// Cross product
+FVector C = FVector::CrossProduct(A, B);
+```
 
 ### Strings and Hashed String Ids
 
 #### FName
+
+`FName` is a system for efficient string handling, using a hashed value for fast comparisons and lookups.
+
+```c++
+FName MyName(TEXT("MyString"));
+// Fast comparison
+if (MyName == FName(TEXT("MyString")))
+{
+    // True
+}
+```
 
 ### Debug Printing and Logging
 
@@ -850,6 +1022,58 @@ Culling can involve a simple algorithm such as frustum (the trapezoidal prism th
 
 ## Online Multiplayer Layer
 
+### Replication Graph
+
+The Replication Graph optimizes network traffic for large-scale multiplayer games by organizing network actors into spatial and logical groups. This system allows for efficient state replication based on player positions and game context.
+
+**Practical Use:** In a battle royale game, the Replication Graph can be used to only update players about the state of nearby enemies, rather than all players in the game, reducing network overhead.
+
+**Example Code:**
+```c++
+// Initialize Replication Graph in your GameMode's StartPlay function
+void AMyGameMode::StartPlay()
+{
+    Super::StartPlay();
+    GetWorld()->GetNetDriver()->SetReplicationDriver<UMyReplicationGraph>();
+}
+
+// Custom Replication Graph Node
+void UMyReplicationGraphNode::GatherActorListsForConnection(const FConnectionGatherActorListParameters& Params)
+{
+    // Custom logic to determine which actors to replicate to which players
+}
+
+### Network Prediction
+
+Network Prediction minimizes the effects of latency by predicting player actions and movements. This creates a smoother multiplayer experience by compensating for network delays.
+
+Practical Use: In a first-person shooter, network prediction can be used to anticipate a player's movement, allowing other players to see that player moving smoothly, even with network latency.
+
+**Example Code:**
+```c++
+// Implementing a simple movement prediction in a character class
+void AMyCharacter::PredictMovement(float DeltaTime)
+{
+    if (IsLocallyControlled())
+    {
+        // Predict local player's movement
+        PredictedVelocity = CalculateNewVelocity();
+        SetActorLocation(GetActorLocation() + (PredictedVelocity * DeltaTime));
+    }
+    else
+    {
+        // Interpolate non-local players for smoother movement
+        SetActorLocation(FMath::VInterpTo(GetActorLocation(), RemoteTargetLocation, DeltaTime, InterpolationSpeed));
+    }
+}
+```
+
+### Netcode Plugin Framework
+
+The Netcode Plugin Framework allows for modular networking code, enabling developers to tailor the networking stack to their game's specific needs.
+
+Practical Use: In an MMO, different networking strategies may be needed for different areas of the game, such as instanced dungeons versus open-world areas. The Netcode Plugin Framework allows developers to switch between different networking models as needed.
+
 ### Matchmaking & Game Management
 
 ### Object Authority Policy
@@ -858,11 +1082,33 @@ Culling can involve a simple algorithm such as frustum (the trapezoidal prism th
 
 ## Gameplay Foundations Layer
 
+The Gameplay Foundations Layer in Unreal Engine is a critical part of the engine architecture, providing the underlying systems and tools necessary for game development. This layer encompasses everything from the high-level game flow and scripting systems to the management of static and dynamic game objects.
+
 ### High-Level Game Flow System/FSM
+
+The high-level game flow system or Finite State Machine (FSM) is used to control the overall flow of a game, such as menu navigation, level transitions, and game states like pause or game over. This system ensures that game states are managed cleanly and transitions occur smoothly.
+
+```c++
+// Define game states
+enum class EGameState : uint8
+{
+    MainMenu,
+    InGame,
+    Paused,
+    GameOver
+};
+
+// Change game state
+void ChangeGameState(EGameState NewState);
+```
 
 ### Scripting System
 
+Scripting systems in Unreal Engine allow for the creation of game logic and behavior without the need for compiled code.
+
 #### UnrealScript
+
+Previously, UnrealScript was Unreal Engine's native scripting language, used prior to UE4. It provided a high-level approach to game scripting. UnrealScript is no longer used in current Unreal Engine versions, replaced by the Blueprint system.
 
 #### Blueprint
 
@@ -978,71 +1224,74 @@ The base class for components is the `UActorComponent`.
 
 ##### Table of Components
 
-| Component                     | Description                                                                                                                                                                                                                         |
-|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ActorComponent                | Every component inherits from this class.                                                                                                                                                                                           |
-| ApplicationLifecycleComponent | For handling notifications received from the OS about the application state (low power mode, temperature changed, received startup, activated, suspended, termination, etc). Most of these notifications are sent via CoreDelegates |
-| UArrowComponent               | A PrimitiveComponent (which means it renders unlike ActorComponent) that renders a simple arrow using lines. Can be used to indicate which way an object is facing.                                                                 |
-| UAudioComponent               |
-| UBillboardComponent
-| UBoundsCopyComponent
-| UBoxComponent
-| UBoxReflectionCaptureComponent
-| UBrushComponent
-| UCapsuleComponent
-| UChildActorComponent
-| UDecalComponent
-| UDirectionalLightComponent
-| UDrawFrustumComponent
-| UDrawSphereComponent
-| UExponentialHeightFogComponent
-| UForceFeedbackComponent
-| UHierarchicalInstancedStaticMeshComponent
-| UInputComponent
-| UInstancedStaticMeshComponent
-| UInterpToMovementComponent
-| ULightComponent
-| ULightComponentBase
-| ULightmassPortalComponent
-| ULineBatchComponent
-| ULocalLightComponent
-| ULODSyncComponent
-| UMaterialBillboardComponent
-| UMeshComponent
-| UModelComponent
-| UPawnNoiseEmitterComponent
-| UPlanarReflectionComponent
-| UPlaneReflectionCaptureComponent
-| UPlatformEventsComponent
-| UPointLightComponent
-| UPoseableMeshComponent
-| UPostProcessComponent
-| UPrimitiveComponent           | An ActorComponent that can be rendered.                                                                                                                                                                                             |
-| URectLightComponent
-| UReflectionCaptureComponent
-| URuntimeVirtualTextureComponent
-| USceneCaptureComponent
-| USceneCaptureComponent2D
-| USceneCaptureComponentCube
-| USceneComponent               | An ActorComponent that has a transform.                                                                                                                                                                                             |
-| UShapeComponent
-| USkeletalMeshComponent
-| USkinnedMeshComponent
-| USkyAtmosphereComponent
-| USkyLightComponent
-| USphereComponent
-| USphereReflectionCaptureComponent
-| USplineComponent
-| USplineMeshComponent
-| USpotLightComponent
-| UStaticMeshComponent
-| UStereoLayerComponent
-| UTextRenderComponent
-| UTimelineComponent
-| UVectorFieldComponent
-| UVolumetricCloudComponent
-| UWindDirectionalSourceComponent
-| UWorldPartitionStreamingSourceComponent
+##### Table of Components
+
+| Component                             | Description                                                                                                                                                                                                                         |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ActorComponent                        | The base class for all components that can be attached to actors.                                                                                                                                                                   |
+| ApplicationLifecycleComponent         | Manages application lifecycle events such as application pause, resume, and termination.                                                                                                                                            |
+| UArrowComponent                       | Renders an arrow in the editor and game world for directional indication, commonly used for debugging purposes.                                                                                                                     |
+| UAudioComponent                       | Responsible for playing sound in the game world.                                                                                                                                                                                    |
+| UBillboardComponent                   | Used to display a 2D texture in the world, always facing the camera, typically used for editor visualization.                                                                                                                       |
+| UBoundsCopyComponent                  | Copies the bounds (Box and Sphere) from another component to define this component's bounds.                                                                                                                                       |
+| UBoxComponent                         | A box-shaped primitive component used for collision detection and physics simulation.                                                                                                                                               |
+| UBoxReflectionCaptureComponent        | Captures and creates box-shaped reflection maps for dynamic objects in the scene.                                                                                                                                                   |
+| UBrushComponent                       | Represents a brush shape (used for level design and collision). Typically not used directly in gameplay.                                                                                                                            |
+| UCapsuleComponent                     | A capsule-shaped primitive component used for collision detection and physics simulation.                                                                                                                                           |
+| UChildActorComponent                  | Allows an actor to spawn another actor as its child, effectively allowing actors to be nested within actors.                                                                                                                        |
+| UDecalComponent                       | Used to project materials onto surfaces in the world, such as bullet holes, blood splatters, or signs.                                                                                                                              |
+| UDirectionalLightComponent            | Represents a directional light source that affects the entire scene, like the sun.                                                                                                                                                  |
+| UDrawFrustumComponent                 | Renders a camera's view frustum for visualization in the editor or during gameplay for debugging.                                                                                                                                   |
+| UDrawSphereComponent                  | Renders a simple wireframe sphere, used for visualization and debugging.                                                                                                                                                            |
+| UExponentialHeightFogComponent        | Adds atmospheric fog effects that become denser with distance from the ground level.                                                                                                                                                |
+| UForceFeedbackComponent               | Triggers force feedback effects (vibration) on input devices.                                                                                                                                                                        |
+| UHierarchicalInstancedStaticMeshComponent | Manages multiple instances of a StaticMesh, allowing for efficient rendering and collision.                                                                                                                                           |
+| UInputComponent                       | Handles input from the player and routes it to the appropriate gameplay functionality.                                                                                                                                              |
+| UInstancedStaticMeshComponent         | Similar to HierarchicalInstancedStaticMeshComponent but less optimized; used for rendering multiple instances of the same mesh.                                                                                                     |
+| UInterpToMovementComponent            | Provides interpolated movement between points for smooth transitions.                                                                                                                                                               |
+| ULightComponent                       | The base class for all light components.                                                                                                                                                                                            |
+| ULightComponentBase                   | Abstract base class for light components.                                                                                                                                                                                           |
+| ULightmassPortalComponent             | Used to improve Global Illumination quality in specific areas.                                                                                                                                                                      |
+| ULineBatchComponent                   | Used for drawing lines and shapes for debugging purposes.                                                                                                                                                                           |
+| ULocalLightComponent                  | Represents a light source that has a limited range, like a street lamp or a flashlight.                                                                                                                                             |
+| ULODSyncComponent                     | Manages level of detail settings across different components based on their visibility and importance.                                                                                                                              |
+| UMaterialBillboardComponent           | Renders a billboard using a material, allowing for complex animated or dynamic 2D elements.                                                                                                                                         |
+| UMeshComponent                        | Base class for components that render meshes.                                                                                                                                                                                       |
+| UModelComponent                       | Used to render geometry defined by BSP brushes, typically used in level construction.                                                                                                                                                |
+| UPawnNoiseEmitterComponent            | Allows Pawns to emit noise events that AI characters can respond to.                                                                                                                                                                |
+| UPlanarReflectionComponent            | Captures and creates planar reflection maps for dynamic objects in the scene.                                                                                                                                                       |
+| UPlaneReflectionCaptureComponent      | Captures and creates planar reflection maps, similar to box reflection but for flat surfaces.                                                                                                                                        |
+| UPlatformEventsComponent              | Provides access to mobile platform-specific events, such as entering background mode or low battery warnings.                                                                                                                        |
+| UPointLightComponent                  | Represents a point light source that emits light in all directions from a single point.                                                                                                                                             |
+| UPoseableMeshComponent                | A skeletal mesh component that allows for posing its bones at runtime.                                                                                                                                                              |
+| UPostProcessComponent                 | Applies post-process effects to the scene when the camera is inside its bounds.                                                                                                                                                     |
+| UPrimitiveComponent                   | The base class for all components that represent physical objects in the world.                                                                                                                                                     |
+| URectLightComponent                   | Represents a light that emits from a rectangular area, providing soft, area lighting.                                                                                                                                               |
+| UReflectionCaptureComponent           | The base class for components that capture scene reflections to improve rendering quality.                                                                                                                                           |
+| URuntimeVirtualTextureComponent       | Used to render and manage a Runtime Virtual Texture, which can be used for large landscapes or virtual texturing.                                                                                                                   |
+| USceneCaptureComponent                | The base class for components that capture and render a portion of the scene to a texture.                                                                                                                                           |
+| USceneCaptureComponent2D              | Captures a 2D view of the scene from a specific location, similar to a camera, and renders it to a texture.                                                                                                                          |
+| USceneCaptureComponentCube            | Captures a 360-degree view of the scene and renders it to a cubemap texture.                                                                                                                                                         |
+| USceneComponent                       | The base class for all components that have a transform and can be placed in the world.                                                                                                                                             |
+| UShapeComponent                       | Base class for shape components (e.g., Box, Capsule, Sphere) used for collision and overlap detection.                                                                                                                               |
+| USkeletalMeshComponent                | Renders an animated skeletal mesh in the world, typically used for characters.                                                                                                                                                      |
+| USkinnedMeshComponent                 | The base class for components that support skinning, including SkeletalMeshComponent and MorphTargetComponent.                                                                                                                       |
+| USkyAtmosphereComponent               | Simulates atmospheric sky and light scattering effects.                                                                                                                                                                             |
+| USkyLightComponent                    | Represents a light source that simulates the sky, providing ambient light based on the sky's appearance.                                                                                                                             |
+| USphereComponent                      | A sphere-shaped primitive component used for collision detection and physics simulation.                                                                                                                                             |
+| USphereReflectionCaptureComponent     | Captures and creates spherical reflection maps for dynamic objects in the scene.                                                                                                                                                    |
+| USplineComponent                      | Represents a spline, or smooth curved line, which can be used for paths, roads, and other curvilinear constructs.                                                                                                                    |
+| USplineMeshComponent                  | Used to render a mesh along a spline, allowing for flexible and dynamic shapes like roads or pipes.                                                                                                                                  |
+| USpotLightComponent                   | Represents a spotlight source that emits light in a cone shape.                                                                                                                                                                     |
+| UStaticMeshComponent                  | Renders a static mesh in the world, typically used for non-moving objects.                                                                                                                                                          |
+| UStereoLayerComponent                 | Manages stereo layer elements, used primarily in VR to render UI or other elements directly to the headset display.                                                                                                                  |
+| UTextRenderComponent                  | Renders text in the 3D world, useful for labels, debugging information, or simple in-world UI elements.                                                                                                                              |
+| UTimelineComponent                    | Manages timed events and interpolations for actors, allowing for smooth transitions and animations.                                                                                                                                 |
+| UVectorFieldComponent                 | Applies a vector field to particles in a particle system, influencing their movement and behavior.                                                                                                                                   |
+| UVolumetricCloudComponent             | Simulates and renders volumetric clouds in the sky.                                                                                                                                                                                 |
+| UWindDirectionalSourceComponent       | Simulates wind in the environment, affecting foliage, cloth, and other susceptible objects.                                                                                                                                          |
+| UWorldPartitionStreamingSourceComponent | Manages streaming of world partitions, allowing for large open worlds to be loaded and unloaded dynamically.                                                                                                                          |
+
 
 ### Real-Time Agent-Based Simulation
 
